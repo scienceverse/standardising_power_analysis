@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Cristian Mesquida">
+<meta name="author" content="Daniël Lakens">
+<meta name="author" content="Lisa DeBruine">
+<meta name="keywords" content="Peer Review, Quality Control, Automation, Standardisation, Power Analysis">
+<meta name="description" content="IMPROVING THE TRANSPARENCY OF POWER ANALYSES THROUGH STANDARDIZED REPORTING">
+
+<title>Improving the Transparency of Power Analyses Through Standardized Reporting</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="manuscript_files/libs/clipboard/clipboard.min.js"></script>
+<script src="manuscript_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="manuscript_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="manuscript_files/libs/quarto-html/popper.min.js"></script>
+<script src="manuscript_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="manuscript_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="manuscript_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="manuscript_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="manuscript_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="manuscript_files/libs/bootstrap/bootstrap-16db0027e5ae7e5314da65b604f30081.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="manuscript_files/libs/tabwid-1.1.3/tabwid.css" rel="stylesheet">
+<script src="manuscript_files/libs/tabwid-1.1.3/tabwid.js"></script>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="_extensions/wjschne/apaquarto/apa.css">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="manuscript.docx"><i class="bi bi-file-word"></i>MS Word (apaquarto)</a></li></ul></div></div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content" id="quarto-document-content">
+
+
+
+
+<br>
+
+<br>
+
+<section id="title" class="level1 title unnumbered unlisted">
+<h1 class="title unnumbered unlisted">Improving the Transparency of Power Analyses Through Standardized Reporting</h1>
+<div class="Author">
+<br>
+
+<p>Cristian Mesquida<sup>1</sup>, Daniël Lakens<sup>1</sup>, and Lisa DeBruine<sup>2</sup></p>
+<p><sup>1</sup>Industrial Engineering and Innovation Sciences, Eindhoven University of Technology</p>
+<p><sup>2</sup>Institute of Neuroscience and Psychology, University of Glasgow</p>
+</div>
+<br>
+
+<br>
+
+</section>
+<section id="author-note" class="level1 unnumbered unlisted AuthorNote">
+<h1 class="unnumbered unlisted AuthorNote">Author Note</h1>
+<p>Cristian Mesquida <img src="_extensions/wjschne/apaquarto/ORCID-iD_icon-vector.svg" id="orchid" class="img-fluid" style="width:4.23mm" alt="Orcid ID Logo: A green circle with white letters ID"> <a href="https://orcid.org/0000-0002-1542-8355">https://orcid.org/0000-0002-1542-8355</a></p>
+<p>Daniël Lakens <img src="_extensions/wjschne/apaquarto/ORCID-iD_icon-vector.svg" id="orchid" class="img-fluid" style="width:4.23mm" alt="Orcid ID Logo: A green circle with white letters ID"> <a href="https://orcid.org/0000-0002-8393-5316">https://orcid.org/0000-0002-8393-5316</a></p>
+<p>Lisa DeBruine <img src="_extensions/wjschne/apaquarto/ORCID-iD_icon-vector.svg" id="orchid" class="img-fluid" style="width:4.23mm" alt="Orcid ID Logo: A green circle with white letters ID"> <a href="https://orcid.org/0000-0002-7523-5539">https://orcid.org/0000-0002-7523-5539</a></p>
+<p>The data and analysis scripts related to this study are publicly available on the Open Science Framework and can be found at XXX Authors declare no conflicts of interest</p>
+<p>Author roles were classified using the Contributor Role Taxonomy (CRediT; https://credit.niso.org/) as follows: <em>Cristian Mesquida</em><strong>: </strong>conceptualization, methodology, formal analysis, data curation, and writing — original draft. <em>Daniël Lakens</em><strong>: </strong>conceptualization, methodology, formal analysis, data curation, and writing — review and editing. <em>Lisa DeBruine</em><strong>: </strong>conceptualization, methodology, formal analysis, data curation, and writing — review and editing</p>
+<p>Correspondence concerning this article should be addressed to Daniël Lakens, Industrial Engineering and Innovation Sciences, Eindhoven University of Technology, Den Dolech 2, 5600 MB, Eindhoven, Eindhoven, Email: <a href="mailto:D.Lakens@tue.nl">D.Lakens@tue.nl</a></p>
+<p><em>Keywords</em>: Peer Review, Quality Control, Automation, Standardisation, Power Analysis</p>
+<br>
+</section>
+<section id="firstheader" class="level1 title unnumbered unlisted">
+<h1 class="title unnumbered unlisted">Improving the Transparency of Power Analyses Through Standardized Reporting</h1>
+<section id="introduction" class="level2">
+<h2 data-anchor-id="introduction">Introduction</h2>
+<p>An important step when designing a study is to justify the sample size that will be collected. The key aim of a sample size justification for such studies is to explain how the collected data is expected to provide valuable information given the inferential goals of the researcher <span class="citation" data-cites="lakens2022">(<a href="#ref-lakens2022" role="doc-biblioref">Lakens, 2022</a>)</span>. One common approach is to conduct an <em>a priori</em> power analysis. When such an analysis is performed, the report should include all parameters used to conduct it. Complete reporting enables editors, reviewers, and readers to evaluate the validity of the power analysis and reproduce its results. Yet, <em>a priori</em> power analyses often omit important information <span class="citation" data-cites="thibault_2022 thibault_errors_power bakker_2020">(<a href="#ref-bakker_2020" role="doc-biblioref">Bakker et al., 2020</a>; <a href="#ref-thibault_errors_power" role="doc-biblioref">Thibault et al., 2024</a>; <a href="#ref-thibault_2022" role="doc-biblioref">Thibault &amp; Pedder, 2022</a>)</span>. This lack of transparency prevents peers from reproducing the power analysis and limits their ability to scrutinize the analytic decisions. For example, incomplete reporting can obscure discrepancies between the statistical test specified in the <em>a priori</em> power analysis and the key statistical test used in the study <span class="citation" data-cites="bakker_2020">(<a href="#ref-bakker_2020" role="doc-biblioref">Bakker et al., 2020</a>)</span>, or between the effect size used in the power analysis and the effect of interest in a newly conducted study.</p>
+<section id="potential-solutions" class="level3">
+<h3 data-anchor-id="potential-solutions">Potential solutions</h3>
+<section id="metacheck" class="level4">
+<h4 data-anchor-id="metacheck">Metacheck.</h4>
+<p>One approach to improving the transparency of power analyses is to use automated tools such as Metacheck. Metacheck is a modular tool that uses text search, code, and large language models (LLMs) to extract information from scientific texts and provide suggestions for improvement. One of its dedicated modules, the <code>power</code> module, identifies power analyses and warn authors if a post hoc power analysis is reported.</p>
+<p>The <code>power</code> module uses regular expressions (i.e., rule-based pattern matching) to identify sentences describing a power analysis and classify them as a priori, sensitivity or post hoc. To identify potential power analyses, the module searches for paragraphs that satisfy three criteria: they contain the standalone word <em>power</em> (or <em>powers</em>/<em>powered</em>), at least one term associated with power analyses (e.g., <em>effect size</em>, <em>sample size</em>, <em>a priori</em>, <em>sensitivity</em>, or <em>post hoc</em>), and at least one numeric value, excluding four-digit numbers that are likely to represent publication years. Because this approach relies on regular expressions, only power analyses that explicitly include keyowrds such as <em>a priori</em>, <em>sensitivity</em> or <em>post hoc</em> can be classified.</p>
+<p>To illustrate this limitation, we applied the <code>power</code> module to a sample of 1937 open-access articles from <em>Psychological Science</em> to estimate how many power analyses could be classified as <em>a priori</em>, <em>sensitivity</em> or <em>post hoc</em>. Across the 1824 reported power analysis (although these include some double counted due to overlapping sentences), 1483 could not be classified, 198 were classified as <em>a priori</em>, 107 were classified as <em>sensitivity</em> and 36 were classified as <em>post hoc</em>. These results suggest that many reported power analyses cannot be classified using the rule-based methods alone because authors often describe them without using standardized terminology. For example, researcher may write that a study was “powered at 80%”, “the desired power was .80” or “we planned to achieve an 80% probability of detecting the effect.” without explicitly stating that the analysis was <em>a priori</em>, <em>sensitivity</em> or <em>post hoc</em>.</p>
+<!--#  Below we show the prevalence of missing information using the LLM. This was already reported in the Metacheck paper. Instead of reporting the same information twice perhaps we can show an example of poorly reported power analysis?-->
+<p>A second goal of the <code>power</code> module is to help researchers report power analyses more completely. However, extracting parameters of a power analysis from unstructured scientific text is challenging because the same information can be phrased in many different ways. Consequently, deterministic rule-based approaches fail to identify parameter information that is present but expressed in an unexpected way. To address this limitation the <code>power</code> module can optionally use an LLM to interpret flexible human language. To illustrate this approach, we applied the LLM-version of <code>power</code> module to a sample of 1937 open-access articles from <em>Psychological Science</em>. <a href="#tbl-power_llm" class="quarto-xref" aria-expanded="false">Table&nbsp;1</a> shows the proportion of missing components from 1295 power analyses. Although the LLM-based approach can identify information expressed in a wider range of ways than rule-based methods, some parameters remain missing because they were not reported or could not be reliably extracted from the text.</p>
+<div class="cell FigureWithoutNote" prefix="" data-tblnum="1" data-custom-style="FigureWithoutNote">
+<div id="tbl-power_llm" class="cell quarto-float quarto-figure quarto-figure-center" prefix="" data-tblnum="1">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-power_llm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Table&nbsp;1</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>Proportion of missing components from 1295 power analyses.</p>
+</div>
+</figcaption>
+<div aria-describedby="tbl-power_llm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div class="tabwid"><style>.cl-21202d0a{}.cl-21192c4e{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-211c2020{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-211c202a{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-211c412c{width:2in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-211c4136{width:1in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-211c4137{width:2in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-211c4140{width:1in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-211c4141{width:2in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-211c414a{width:1in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-21202d0a"><thead><tr style="overflow-wrap:break-word;"><th class="cl-211c412c"><p class="cl-211c2020"><span class="cl-21192c4e">Component</span></p></th><th class="cl-211c4136"><p class="cl-211c202a"><span class="cl-21192c4e">Missing</span></p></th><th class="cl-211c4136"><p class="cl-211c202a"><span class="cl-21192c4e">Percent</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-211c4137"><p class="cl-211c2020"><span class="cl-21192c4e">effect_size</span></p></td><td class="cl-211c4140"><p class="cl-211c202a"><span class="cl-21192c4e">420</span></p></td><td class="cl-211c4140"><p class="cl-211c202a"><span class="cl-21192c4e">32%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-211c4137"><p class="cl-211c2020"><span class="cl-21192c4e">power</span></p></td><td class="cl-211c4140"><p class="cl-211c202a"><span class="cl-21192c4e">199</span></p></td><td class="cl-211c4140"><p class="cl-211c202a"><span class="cl-21192c4e">15%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-211c4137"><p class="cl-211c2020"><span class="cl-21192c4e">alpha_level</span></p></td><td class="cl-211c4140"><p class="cl-211c202a"><span class="cl-21192c4e">868</span></p></td><td class="cl-211c4140"><p class="cl-211c202a"><span class="cl-21192c4e">67%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-211c4137"><p class="cl-211c2020"><span class="cl-21192c4e">sample_size</span></p></td><td class="cl-211c4140"><p class="cl-211c202a"><span class="cl-21192c4e">240</span></p></td><td class="cl-211c4140"><p class="cl-211c202a"><span class="cl-21192c4e">19%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-211c4137"><p class="cl-211c2020"><span class="cl-21192c4e">power_type</span></p></td><td class="cl-211c4140"><p class="cl-211c202a"><span class="cl-21192c4e">0</span></p></td><td class="cl-211c4140"><p class="cl-211c202a"><span class="cl-21192c4e">0%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-211c4137"><p class="cl-211c2020"><span class="cl-21192c4e">software_combined</span></p></td><td class="cl-211c4140"><p class="cl-211c202a"><span class="cl-21192c4e">920</span></p></td><td class="cl-211c4140"><p class="cl-211c202a"><span class="cl-21192c4e">71%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-211c4137"><p class="cl-211c2020"><span class="cl-21192c4e">effect_size_metric_combined</span></p></td><td class="cl-211c4140"><p class="cl-211c202a"><span class="cl-21192c4e">361</span></p></td><td class="cl-211c4140"><p class="cl-211c202a"><span class="cl-21192c4e">28%</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-211c4141"><p class="cl-211c2020"><span class="cl-21192c4e">statistical_test_combined</span></p></td><td class="cl-211c414a"><p class="cl-211c202a"><span class="cl-21192c4e">279</span></p></td><td class="cl-211c414a"><p class="cl-211c202a"><span class="cl-21192c4e">22%</span></p></td></tr></tbody></table></div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="AfterWithoutNote" data-custom-style="AfterWithoutNote">
+<p>Although LLMs provide a flexible way to parse natural language variation, they treat the symptoms of inconsistent reporting rather than its root cause. When information is inherently ambiguous or incomplete, an LLM may misclassify a power analysis or extract incorrect parameters. Moreover, using LLMs for routine information-extraction tasks incurs substantial computational and energy costs. A preferable long-term solution is to reduce the need for LLM-based approaches by making scientific text easier to extract in the first place. This goal is best achieved through standardized reporting conventions.</p>
+</div>
+</section>
+<section id="machine-readable-power-analyses" class="level4">
+<h4 data-anchor-id="machine-readable-power-analyses">Machine-readable power analyses.</h4>
+<p>Akin to the concept of machine-readable hypothesis <span class="citation" data-cites="lakens_2021">(<a href="#ref-lakens_2021" role="doc-biblioref">Lakens &amp; DeBruine, 2021</a>)</span>, one possible solution would be to represent power analyses directly in a machine-readable format, such as JavaScript Object Notation (JSON). For example, the <code>power</code> module uses a JSON schema that defines the structure of a power analysis report and guides the LLM in extracting and organizing relevant information. A schema can specify which fields are required, which values are permitted, and how the information should be structured, making the resulting data easier for software to process. Such a representation could include predefined fields for the type of power analysis, statistical test, sample size, alpha level, target power, effect size, and other relevant parameters, such as the justification for the assumed effect size [@lakens2022].</p>
+<p>However, requiring researchers to produce and submit power analyses directly as JSON files is currently unlikely to be practical. Although such a format would facilitate automated processing and validation, it would shift the burden of structuring information from automated systems to researchers and create an additional reporting requirement. A more feasible approach may be to maintain human-readable reporting formats while adopting standardized structures that allow power analysis information to be converted into machine-readable representations.</p>
+</section>
+<section id="standardization" class="level4">
+<h4 data-anchor-id="standardization">Standardization.</h4>
+<p>One reason why power analyses lack key information is the absence of specific reporting guidelines that editors, reviewers, and researchers can follow. For example, the American Psychological Association’s (APA) <em>Journal Article Reporting Standards</em> (JARS) provides reporting standards for several aspects of scientific articles <span class="citation" data-cites="appelbaum2018">(<a href="#ref-appelbaum2018" role="doc-biblioref">Appelbaum et al., 2018</a>)</span>, but it provides no guidance on how to report power analyses. Furthermore, traditional reporting guidelines specify <em>what</em> information to report, but rarely dictate <em>how</em> it should be presented. A reporting standard that specifies both the required information and a consistent structure for presenting it could substantially improve the transparency and extractability of power analyses.</p>
+<p>A useful precedent exists in the standardized reporting of statistical tests following APA guidelines. Researchers are familiar with reporting statistical tests such as <em>t</em>-tests and <em>F</em>-tests using a consistent structure that includes the test statistic, degrees of freedom, <em>p</em>-value, and effect size. For example, an <em>F</em>-test may be reported as <em>F</em>(1, 3) = 3.23, <em>p</em> = .01, <span class="math inline">\eta_p^2</span> = .12. These standardized reporting convention allows readers to quickly identify and interpret the information they convey. At the same tume, they have the additional benefit of enabling automated extraction tools like Statcheck to reliably parse statistical tests and verify reported <em>p</em>-values.</p>
+<p>The same approach can be applied to power analyses. The first step is to determine what information should be reported and how it should be reported. To formalize these reporting requirements, we develop a JSON schema that defines the parameters to be reported, their data types, permitted values, and any relationships or conditional requirements between them. The schema serves as a machine-readable specification of the reporting standard that can be implemented in the Metacheck <code>power</code> module, rather than a format that researchers are expected to complete directly. Based on this formal specification, we propose a standardized, human-readable conventions that are sufficiently consistent for automated rule-based extraction while remaining practical for researchers to use in conventional scientific writing.</p>
+</section>
+</section>
+</section>
+<section id="json-schema" class="level2">
+<h2 data-anchor-id="json-schema">JSON schema</h2>
+<p>Box 1 shows the structure of a machine-readable article, where each section can be represented as a machine-readable object containing predefined fields and values. Box 2 shows the JSON representation of a power analysiss that conform to the proposed schema. Each property (e.g., <code>id</code>, <code>type</code>) corresponds to a field defined in the schema and is illustrated using the example boxes, allowing readers to see how reported information is represented in practice. For illustrative purposes, we use an a priori power analysis for a 2 x 2 within-subject ANOVA, where the effect of interest is the interaction, as an example.</p>
+<p>Box 1. The top-level structure of a machine-readable article</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"name"</span><span class="fu">:</span> <span class="fu">{},</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"info"</span><span class="fu">:</span> <span class="fu">{},</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"author"</span><span class="fu">:</span> <span class="fu">{},</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"hypotheses"</span><span class="fu">:</span> <span class="fu">{},</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"power_analysis"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"...Box 2..."</span><span class="fu">},</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"data"</span><span class="fu">:</span> <span class="fu">{},</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"analyses"</span><span class="fu">:</span> <span class="fu">{},</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"results"</span><span class="fu">:</span> <span class="fu">{}</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Box 2: JSON Schema overview for the power analysis object.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">"power_analysis"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"id"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"...Box 3..."</span><span class="fu">}</span> <span class="fu">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"type"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"...Box 4..."</span><span class="fu">},</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"family_test"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"...Box 5..."</span><span class="fu">},</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"type_test"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"...Box 6..."</span><span class="fu">},</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"test_parameters"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"...Box 7..."</span><span class="fu">},</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"type_effect_size"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"...Box 8..."</span><span class="fu">},</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"effect_size"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"...Box 9..."</span><span class="fu">},</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"effect_size_justification"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"...Box 10..."</span><span class="fu">},</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"sample_size"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"...Box 11..."</span><span class="fu">},</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"power"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"...Box 12..."</span><span class="fu">},</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"alpha"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"...Box 13..."</span><span class="fu">},</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"software"</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">"...Box 14..."</span><span class="fu">}</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<!--#  The cases included for each component are not intended to be exhaustive. They were deliberately simplified to illustrate the proposed reporting framework. In practice, different types of power analyses may require different schemas, or alternatively, a single schema with conditional fields that depend on the type of power analysis. -->
+<section id="unique-identifier" class="level3">
+<h3 data-anchor-id="unique-identifier">Unique Identifier</h3>
+<p>We propose that each power analysis should be assigned a unique identifier. This identifier would create an explicit link between the research question, the statistical test used to address it, and the corresponding power analysis. Lakens and DeBruine <span class="citation" data-cites="lakens_2021">(<a href="#ref-lakens_2021" role="doc-biblioref">2021</a>)</span> argued that hypotheses should be machine-readable because textual descriptions are often too vague to determine which statistical test related to the hypothesis and which pattern of results should be observed to corroborate the hypothesis.</p>
+<p>The same principle applies to power analyses, which are often reported with insufficient detail to determine which hypothesis or statistical test they were intended to support. This issue is particularly relevant in studies that include multiple hypotheses or multiple statistical tests, where researchers may conduct multiple power analyses but do not clearly indicate which analysis each power analysis corresponds to. Assigning a unique identifier to each power analysis would allow researchers and automated tools to establish these relationships and determine whether each planned analysis is supported by an appropriate power analysis. Such links could facilitate automated checks of whether all primary analyses have a corresponding power analysis and whether multiple power analyses refer to the same planned analysis.</p>
+<p>The <code>id</code> field should contain a unique identifier that allows the power analysis to be linked to the corresponding hypothesis and statistical test. The identifier itself has no statistical meaning; it functions as a reference that enables researchers, reviewers, and automated tools to determine which power analysis supports which hypothesis. For example, a manuscript may assign “01” to the power analysis corresponding to the first primary hypothesis test. If a study includes multiple hypotheses, each power analysis should receive a distinct identifier.</p>
+<p>Box 3.1: JSON Schema representation of the <code>id</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="id"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="id-1"><a href="#id-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="id-2"><a href="#id-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"id"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="id-3"><a href="#id-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"string"</span><span class="fu">,</span></span>
+<span id="id-4"><a href="#id-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Unique identifier used to link the power analysis to the corresponding hypothesis and statistical test."</span></span>
+<span id="id-5"><a href="#id-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="id-6"><a href="#id-6" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Box 3.2. Example JSON representation of the <code>id</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"01"</span><span class="fu">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="type-of-power-analysis" class="level3">
+<h3 data-anchor-id="type-of-power-analysis">Type of power analysis</h3>
+<p>This information is important because different types of power analyses answer different questions <span class="citation" data-cites="lakens2022">(<a href="#ref-lakens2022" role="doc-biblioref">Lakens, 2022</a>)</span>. We distinguish four types of power analyses. First, an <em>a priori</em> power analysis is conducted before data collection to estimate the sample size required to detect an effect of interest. Second, a sensitivity power analysis determines the range of effect sizes that can be detected with a specified level of statistical power given the available sample size, statistical test, and significance level. In the schema, we refer to this type of analysis as effect-size sensitivity analysis to distinguish it from other forms of sensitivity analyses and to emphasize that the primary quantity of interest is the smallest effect size that can be detected. Third, a post hoc power analysis calculates the statistical power associated with a prespecified expected effect size given the sample size actually obtained.</p>
+<p>However, the term post hoc power analysis is frequently used ambiguously. Researchers may use it either to refer to power calculated using a prespecified expected effect size or to power calculated using the observed effect size obtained from the study. These approaches serve different purposes. Power calculations based on the observed effect size provide no additional information beyond the <em>p</em>-value and are not recommended <span class="citation" data-cites="yuan_2005">(<a href="#ref-yuan_2005" role="doc-biblioref">Yuan &amp; Maxwell, 2005</a>)</span>. In contrast, power calculations based on a prespecified expected effect size can provide information about the sensitivity of the study design given the sample size obtained. To avoid this ambiguity, the schema uses the term power sensitivity for analyses based on a prespecified expected effect size and reserves the term post hoc for analyses based on the observed effect size. The <code>type</code> field specifies the type of power analysis conducted.</p>
+<p>Box 4.1: JSON Schema representation of the <code>type</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="st">"type"</span><span class="er">:</span> <span class="fu">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"string"</span><span class="fu">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"The type of power analysis conducted."</span><span class="fu">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"enum"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"a priori"</span><span class="ot">,</span> </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"effect size sensitivity"</span><span class="ot">,</span> </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"power sensitivity"</span><span class="ot">,</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"post hoc"</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Box 4.2: Example JSON representation of the <code>type</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"a priori"</span><span class="fu">,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<!--# I assume it is better to avoid spaces between words. -->
+</section>
+<section id="family-test" class="level3">
+<h3 data-anchor-id="family-test">Family test</h3>
+<p>The schema separates the broad <code>family_test</code> property from the more specific <code>type_test</code> value. The <code>family_test</code> property identifies the broad class of statistical test used in the power analysis: correlation, <em>t</em>-test, or <em>F</em>-test. This broad classification facilitates downstream extraction and validation by allowing the schema to apply test-specific requirements. For example, <em>t</em>-tests require information about the directionality of the test (one-sided or two-sided), whereas repeated-measures <em>F</em>-tests require information about the assumed within-subject correlation (within_subject_correlation).</p>
+<p>Box 5.1: JSON Schema representation of the <code>family_test</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="st">"family_test"</span><span class="er">:</span> <span class="fu">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"string"</span><span class="fu">,</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Broad class of statistical test used in the power analysis."</span><span class="fu">,</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"enum"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"correlation"</span><span class="ot">,</span> </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"t-test"</span><span class="ot">,</span> </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"F-test"</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="ot">]</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Box 5.2: Example JSON representation of the <code>family_test</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"family_test"</span><span class="fu">:</span> <span class="st">"F-test"</span><span class="fu">,</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="type-of-test" class="level3">
+<h3 data-anchor-id="type-of-test">Type of test</h3>
+<p>The schema separates the broad <code>family_test</code> property from the more specific <code>type_test</code> value. Whereas <code>family_test</code> identifies the general class of statistical test (e.g., correlation, <em>t</em>-test and <em>F</em>-test), <code>type_test</code> specifies the design or configuration of that test. Reporting this information is important because it clarifies which statistical procedure the power analysis refers to. For correlations (<code>r</code>), it indicates whether the correlation is within-subject or between-subject. For <em>t</em>-tests, the <code>type_test</code> property indicates whether the comparison is one-group, within-subject, or between-subject. For <em>F</em>-tests, it specifies the factorial structure using notation such as 2w, 2b, or 2b*2w, where the number indicates the number of levels and the letters indicate within-subject (w) or between-subject (b) factors.</p>
+<p>Box 6.1: JSON Schema representation of the <code>type_test</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="st">"type_test"</span><span class="er">:</span> <span class="fu">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"string"</span><span class="fu">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Specific test configuration. For r, report 'within-subject' or 'between-subject'. For t-tests, report 'one-group', 'within-subject', or 'between-subject'. For F-tests, use factorial notation such as 2w, 2b, or 2b*2, where the number indicates the number of levels and the letters indicate between-(b) or within-(w) subject factors."</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Box 6.3: Example JSON representation of the <code>type_test</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"type_test"</span><span class="fu">:</span> <span class="st">"2w*2w"</span><span class="fu">,</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="test-parameters" class="level3">
+<h3 data-anchor-id="test-parameters">Test parameters</h3>
+<p>Some statistical tests require additional parameters to fully specify the power analysis. These parameters are stored in the test_parameters object. The required parameters depend on the selected family_test and the design configuration.</p>
+<p>For correlation tests and <em>t</em>-tests, the directionality of the hypothesis should be reported using the tail parameter. A one-sided test is used when the hypothesis specifies a directional prediction, whereas a two-sided test is used when deviations in either direction are considered meaningful. The tail parameter is therefore required for these analyses because the choice between one- and two-sided testing directly affects the critical value and, consequently, the required sample size.</p>
+<p>For within-subject <em>F</em>-tests, the correlation between repeated measurements should be reported using the within_subject_correlation parameter. This correlation represents the expected association between repeated observations and influences the variance estimate used in the power calculation. It is only relevant for designs that include within-subject factors and is therefore not required for purely between-subject designs.</p>
+<!--# We could also include sphericity correction as in G*Power.Another feature could be to make the schema conditional. For exmaple, if family_test = t-test, only tail must be reported. If F-test, only within_subject_correlation must be reported. -->
+<p>Box 7.1: JSON Schema fragment defining the <code>test_parameters</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="st">"test_parameters"</span><span class="er">:</span> <span class="fu">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"object"</span><span class="fu">,</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Test-specific parameters."</span><span class="fu">,</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"properties"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"tail"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"string"</span><span class="fu">,</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"enum"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"one-sided"</span><span class="ot">,</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"two-sided"</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>          <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Directionality of the statistical test. Required for t-tests and correlation tests."</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>          </span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">},</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"within_subject_correlation"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"number"</span><span class="fu">,</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"minimum"</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"maximum"</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Expected correlation between repeated measurements. Required for F-tests that include within-subject factors."</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Box 7.3: Example JSON representation of the <code>test_parameters</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"test_parameters"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"within_subject_correlation"</span><span class="fu">:</span> <span class="fl">0.5</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="type-of-effect" class="level3">
+<h3 data-anchor-id="type-of-effect">Type of effect</h3>
+<p>The effect of interest should be specified because a statistical test does not always unambiguously identify the specific effect for which a power analysis was conducted. For simple designs, such as a <em>t</em>-test, the effect of interest typically corresponds directly to the comparison being tested. However, in factorial designs, researchers may be interested in different effects, including main effects, interactions, planned contrasts, or simple effects. Specifying the type of effect clarifies which hypothesis the power analysis was designed to evaluate and allows readers to determine whether the power analysis corresponds to the intended research question.</p>
+<p>Box 8.1: JSON Schema representation of the <code>type_effect</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="st">"type_effect"</span><span class="er">:</span> <span class="fu">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"string"</span><span class="fu">,</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"The effect or estimand of interst."</span><span class="fu">,</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"enum"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"main effect"</span><span class="ot">,</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"interaction"</span><span class="ot">,</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"planned contrast"</span><span class="ot">,</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"simple effect"</span><span class="ot">,</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"other"</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Box 8.2: Example JSON representation of the <code>type_effect</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"type_effect"</span><span class="fu">:</span> <span class="st">"interaction"</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="effect-size" class="level3">
+<h3 data-anchor-id="effect-size">Effect size</h3>
+<p>The effect size metric and magnitude used in the power analysis should be reported. Different statistical tests require different effect size metrics, and reporting only the numerical value is insufficient because the same value can represent different quantities depending on the metric used. For example, a power analysis for a <em>t</em>-test may be based on Cohen’s <em>d</em>, whereas a power analysis for a correlation may be based on Pearson’s correlation (<em>r</em>). Reporting the metric allows readers to determine whether the assumed effect size corresponds to the effect of interest and enables the power analysis to be reproduced.</p>
+<p>However, reporting the metric may not always be sufficient to reproduce the effect size used in the power analysis. Researchers may convert an effect size from another metric, calculate an effect size from summary statistics, or combine multiple estimates to obtain the value used in the power analysis. The description property allows researchers to transparently report how the effect size was obtained. For example, if an effect size was converted from another metric, researchers should report the original metric and the conversion formula used. If the effect size was calculated by the researchers, the calculation procedure should be described. This information allows readers to evaluate the assumptions underlying the selected effect size and improves the reproducibility of the power analysis.</p>
+<p>The magnitude of the effect size should also be reported because it determines the sample size required to achieve a specified level of statistical power. Reporting the magnitude allows readers to evaluate whether the assumed effect size is plausible, justified, and appropriate for the research question.</p>
+<p>Box 9.1: JSON Schema representation of the <code>effect_size</code> property.</p>
+<!--# We could also create another property to specify how the effect size was estimated where researchers can include means and standard deviations. Should we alos allow spceify the type of effect size beyond the family? For instance, Cohen's ds or drm. -->
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a> <span class="st">"effect_size"</span><span class="er">:</span> <span class="fu">{</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"object"</span><span class="fu">,</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"The metric and magnitude of the effect size used in the power analysis."</span><span class="fu">,</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"additionalProperties"</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"properties"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"metric"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"string"</span><span class="fu">,</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"enum"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"d"</span><span class="ot">,</span> </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">"g"</span><span class="ot">,</span> </span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">"f"</span><span class="ot">,</span> </span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>            <span class="st">"r"</span><span class="ot">,</span> </span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">"β"</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>            <span class="ot">]</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>        <span class="fu">},</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"magnitude"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"number"</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>        <span class="fu">},</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"description"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"string"</span><span class="fu">,</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Additional information about how the effect size was obtained. If the effect size was converted from another metric, report the conversion formula used and its reference."</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"required"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">"metric"</span><span class="ot">,</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">"magnitude"</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Box 9.2: Example JSON representation of the <code>type_effect</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"effect_size"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"metric"</span><span class="fu">:</span> <span class="st">"f"</span><span class="fu">,</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"magnitude"</span><span class="fu">:</span> <span class="fl">0.12</span><span class="fu">,</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="effect-size-justification" class="level3">
+<h3 data-anchor-id="effect-size-justification">Effect Size Justification</h3>
+<p>Researchers may justify the effect size used in an <em>a priori</em> power analysis in several ways. We distinguish six common approaches: effect sizes from previous studies, meta-analyses, pilot studies, Cohen’s <em>d</em> thresholds, field-specific thresholds, and the smallest effect size of interest (SESOI) <span class="citation" data-cites="lakens2022">(<a href="#ref-lakens2022" role="doc-biblioref">Lakens, 2022</a>)</span></p>
+<p>When effect sizes are derived from previous studies or meta-analyses, caution is warranted because these estimates may not correspond to the effect researchers aim to detect. Effect sizes from underpowered studies are often highly uncertain and may overestimate the true effect due to selection bias. Moreover, previous studies may differ from the planned study in important ways, including the population, study design, manipulation or intervention, and outcome measures. These contextual differences determine whether a previously reported effect is relevant to the new study. Meta-analyses aggregate results across studies to estimate pooled effects, but these estimates may also be inappropriate when the included studies differ substantially in design, populations, or outcomes, or when substantial heterogeneity exists.</p>
+<p>In other occasions researchers might conduct a pilot study to estimate the effect size of an intervention. However, a pilot study does not provide a meaningful effect size estimate for planning subsequent studies due to the imprecision inherent in data from small samples <span class="citation" data-cites="leon2011">(<a href="#ref-leon2011" role="doc-biblioref">Leon et al., 2011</a>)</span>.</p>
+<p>Researchers may also rely on Cohen’s <em>d</em> thresholds or field-specific benchmarks, such as conventions for small, medium, or large effects. However, this practice can be problematic because it ignores the research context from which an effect-size estimate derives. Factors such as the population, study design, manipulation or intervention, and outcome measure determine whether an effect size is plausible and relevant for a particular study. Consequently, choosing an effect size solely on the basis of Cohen’s <em>d</em> thresholds or other field-specific benchmarks may overlook the contextual factors that determine whether the effect size is appropriate for the planned study <span class="citation" data-cites="primbs_2022">(<a href="#ref-primbs_2022" role="doc-biblioref">Primbs et al., 2022</a>)</span>.</p>
+<p>Finally, researchers may justify the effect size based on a smallest effect size of interest (SESOI), which defines the smallest effect that would be considered theoretically or practically meaningful for the research question and it is considered best practice.</p>
+<p>The options in <code>method</code> represent common approaches for justifying an effect size but are not exhaustive. The <code>description</code> property allows researchers to provide additional details about how the effect size was obtained or adapted. For example, researchers may combine information from multiple studies by averaging reported effect sizes, apply bias-adjustment methods to an effect size reported in a previous study or meta-analysis, or use an effect size from a previous study with a simpler design to estimate an interaction effect <span class="citation" data-cites="langenberg2023 sommet2023">(<a href="#ref-langenberg2023" role="doc-biblioref">Langenberg et al., 2023</a>; <a href="#ref-sommet2023" role="doc-biblioref">Sommet et al., 2023</a>)</span>. Providing this information is important because the same justification category may involve substantially different procedures for obtaining the final effect size estimate.</p>
+<p>Box 10.1: JSON Schema representation of the <code>effect_size_justification</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="st">"effect_size_justification"</span><span class="er">:</span> <span class="fu">{</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"object"</span><span class="fu">,</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Justification for the effect size estimate used in the power analysis."</span><span class="fu">,</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"additionalProperties"</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"properties"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"method"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"string"</span><span class="fu">,</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"enum"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"previous study"</span><span class="ot">,</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"meta-analysis"</span><span class="ot">,</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"pilot study"</span><span class="ot">,</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Cohen threshold"</span><span class="ot">,</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"field-specific threshold"</span><span class="ot">,</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">"SESOI"</span><span class="ot">,</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"other"</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"reference"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"string"</span><span class="fu">,</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Reference to the study, meta-analysis, or other source used to justify the effect size estimate."</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"description"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"string"</span><span class="fu">,</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Additional explanation about how the effect size was selected or calculated. For example, researchers may average effect sizes from multiple studies, use a bias-adjusted effect size or estimate an interaction effect from a independent two-group study design."</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"required"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">"method"</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Box 10.2: Example JSON representation of the <code>effect_size_justification</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a> <span class="er">...</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"effect_size_justification"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"method"</span><span class="fu">:</span> <span class="st">"previous study"</span><span class="fu">,</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"reference"</span><span class="fu">:</span> <span class="st">"https://doi.org/example/251524592097094"</span><span class="fu">,</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"EXAMPLE?"</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="sample-size" class="level3">
+<h3 data-anchor-id="sample-size">Sample size</h3>
+<p>The sample size used in the power analysis should be reported explicitly. In the schema, this information is represented by the <code>sample_size</code> object with <code>total</code> and, where applicable, <code>per_group</code> values. Reporting the total sample size allows the power analysis to be reproduced, whereas reporting the per-group sample size is particularly informative for designs with multiple independent groups because it shows how the total sample is allocated across conditions. For designs where participants are not divided into groups (e.g., within-subject correlation, one-sample <em>t</em>-tests, within-subject or <em>t</em>-tests), only the total sample size may be relevant.</p>
+<p>Box 11.1: JSON Schema representation of the <code>sample_size</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sample_size"</span><span class="er">:</span> <span class="fu">{</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"object"</span><span class="fu">,</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Sample size information."</span><span class="fu">,</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"additionalProperties"</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"properties"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"per_group"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"integer"</span><span class="fu">,</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"minimum"</span><span class="fu">:</span> <span class="dv">1</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>        <span class="fu">},</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"total"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"integer"</span><span class="fu">,</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"minimum"</span><span class="fu">:</span> <span class="dv">1</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"required"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">"total"</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Box 11.2: Example JSON representation of the <code>sample_size</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"sample_size"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"total"</span><span class="fu">:</span> <span class="dv">186</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="power" class="level3">
+<h3 data-anchor-id="power">Power</h3>
+<p>The power level should be reported because it determines the probability of detecting an effect of the specified magnitude, assuming that the effect exists. Although 80% is commonly used as a default, researchers should explicitly report their chosen level of power. To facilitate machine readability and automated extraction, power should be reported as a numeric value between 0 and 1 (e.g., 0.80 rather than 80%).</p>
+<p>Box 12.1: JSON Schema representation of the <code>power</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="st">"power"</span><span class="er">:</span> <span class="fu">{</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"number"</span><span class="fu">,</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"minimum"</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"maximum"</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Planned or achieved statistical power."</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Box 12.2: Example JSON representation of the <code>power</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"power"</span><span class="fu">:</span> <span class="fl">0.9</span><span class="fu">,</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="alpha" class="level3">
+<h3 data-anchor-id="alpha">Alpha</h3>
+<p>Although 0.05 is commonly used as a default, the alpha level should be reported because it determines the threshold for statistical significance and directly affects the required sample size. Reporting the alpha level also allows peers to evaluate whether it matches the alpha level used in the study. For example, a study may adjust the alpha level to account for multiple comparisons but use a different alpha level in the power analysis, resulting in an underpowered study. To facilitate machine readability and automated extraction, the alpha level should be reported as a numeric value between 0 and 1 (e.g., 0.05 rather than 5%). The <code>justification</code> property allows researchers to provide a justification explaining the rationale for this choice, such as adjustments for multiple comparisons.</p>
+<p>Box 13.1: JSON Schema representation of the <code>alpha</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a> <span class="st">"alpha"</span><span class="er">:</span> <span class="fu">{</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"object"</span><span class="fu">,</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Type I error rate selected for the statistical test."</span><span class="fu">,</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"additionalProperties"</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"properties"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"value"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"number"</span><span class="fu">,</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"minimum"</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"maximum"</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Type I error rate selected for the analysis."</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"justification"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"string"</span><span class="fu">,</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Explanation of the rationale for selecting the alpha level. For example, researchers may adjust the alpha level to account for multiple comparisons."</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"required"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"value"</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Box 13.2: Example JSON representation of the <code>alpha</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"alpha"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"level"</span><span class="fu">:</span> <span class="fl">0.05</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"justification"</span><span class="er">:</span> <span class="st">""</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="software" class="level3">
+<h3 data-anchor-id="software">Software</h3>
+<p>The software used to conduct the power analysis should be reported to allow peers to reproduce the analysis using the exact same sofware and package if applicable (e.g., when using R). They should also provide a link to the script, notebook, or other file containing the code used to perform the power analysis.</p>
+<!--# An additional property could be "version" or "code" where researchers have to include the code used (e.g., pwr.t.test(...)) -->
+<p>Box 14.1: JSON Schema representation of the <code>software</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="st">"software"</span><span class="er">:</span> <span class="fu">{</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"object"</span><span class="fu">,</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Software used for the power analysis."</span><span class="fu">,</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"additionalProperties"</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"properties"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"name"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"string"</span><span class="fu">,</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"enum"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"R"</span><span class="ot">,</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"G*Power"</span><span class="ot">,</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"JASP"</span><span class="ot">,</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"jamovi"</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"package"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"string"</span><span class="fu">,</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Name of the package used to perform the power analysis."</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span><span class="er">,</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"file_location"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"string"</span><span class="fu">,</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"format"</span><span class="fu">:</span> <span class="st">"uri"</span><span class="fu">,</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"Description"</span><span class="fu">:</span> <span class="st">"Link to the repository, file, or other online location containing the code used for the power analysis."</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span><span class="er">,</span></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">"required"</span><span class="er">:</span> <span class="ot">[</span></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"name"</span></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Box 14.2: Example JSON representation of the <code>software</code> property.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"software"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"G*Power"</span><span class="fu">,</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"file_location"</span><span class="fu">:</span><span class="st">""</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="full-example" class="level2">
+<h2 data-anchor-id="full-example">Full Example</h2>
+<p>Box 15 shows a complete example containing all properties defined in the proposed schema.</p>
+<p>Box 15. Example JSON representation of a complete power analysis object.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"01"</span><span class="fu">,</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"a priori"</span><span class="fu">,</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"family_test"</span><span class="fu">:</span> <span class="st">"F-test"</span><span class="fu">,</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"type_test"</span><span class="fu">:</span> <span class="st">"2w*2w"</span><span class="fu">,</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"test_parameters"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"within_subject_correlation: 0.5"</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"type_effect"</span><span class="fu">:</span> <span class="st">"interaction"</span><span class="fu">,</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"effect_size"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"metric"</span><span class="fu">:</span> <span class="st">"f"</span><span class="fu">,</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"magnitude"</span><span class="fu">:</span> <span class="fl">0.12</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"effect_size_justification"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"method"</span><span class="fu">:</span> <span class="st">"previous study"</span><span class="fu">,</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"reference"</span><span class="fu">:</span> <span class="st">"https://doi.org/example/251524592097094"</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"sample_size"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"total"</span><span class="fu">:</span> <span class="dv">186</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"power"</span><span class="fu">:</span> <span class="fl">0.9</span><span class="fu">,</span></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"alpha"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"level"</span><span class="fu">:</span> <span class="fl">0.05</span></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"software"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"G*Power"</span><span class="fu">,</span></span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"file_location"</span><span class="fu">:</span><span class="st">"https://EXAMPLE"</span></span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="standardized-reporting" class="level2">
+<h2 data-anchor-id="standardized-reporting">Standardized reporting</h2>
+<p>Now that we have defined a JSON Schema that specifies which information should be reported and how it should be structured, the next step is to establish standardized reporting guidelines for power analysis. These guidelines should ensure that information is interpretable by human readers but also structured in a way that automated tools like Metacheck can extract using deterministic approaches (e.g., regular expressions). The extracted information can then be used to populate a JSON object, which can be validated against the JSON Schema to ensure that all required fields are present and that reported values conform to the specified constraints.</p>
+<!--# The way I conceive this is that the Metacheck power module will use rule-based code to extract this information, represent it as a structured object, and validate it against the JSON schema. -->
+<p>Proposed standardized reporting for power analyses:</p>
+<blockquote class="blockquote">
+<p>power_analysis: id = 01; type = a priori; family_test = F-test; type_test = 2w2w; test_parameters.within_subject_correlation = 0.50; type_effect = interaction; effect_size.metric = f; effect_size.magnitude = 0.12; effect_size_justification.method = previous study; effect_size_justification.reference = https://doi.org/example/251524592097094; sample_size.total = 186; alpha.level = 0.05; power = 0.90; software.name = G*Power, software.file_location = https://EXAMPLE”.</p>
+</blockquote>
+</section>
+<section id="discussion" class="level2">
+<h2 data-anchor-id="discussion">Discussion</h2>
+<p>The proposed schema represents an initial step toward a standardized representation of power analyses that can improve transparency by imposing a consistent structure on the information required to evaluate and reproduce power analyses, while also facilitating information extraction using rule-based automated tools.</p>
+<p>The current version focuses on commonly used statistical tests, including correlations, <em>t</em>-tests, and <em>F</em>-tests. Extending the standard to accommodate more complex analytical approaches, such as power analyses for mixed-effects models or simulation-based power analyses, will require identifying additional parameters and reporting requirements. Developing a comprehensive standard that covers the diversity of power analysis approaches used across disciplines will therefore require a community effort involving researchers and other stakeholders, such as journals. Such collaborative development can ensure that future extensions of the schema reflect the needs of different research communities while maintaining a consistent structure that supports both human interpretation and automated extraction.</p>
+<p>Although structured formats such as JSON provide clear advantages for automated processing and validation, requiring researchers to manually complete structured objects for each power analysis would introduce additional reporting demands and may reduce adoption. The proposed approach therefore aims to achieve a compromise between machine readability and practical feasibility by maintaining conventional human-readable reporting while introducing sufficient structure for automated extraction and validation. Nevertheless, future developments could explore workflows in which software generates machine-readable representations directly, reducing the need for manual data entry while preserving the advantages of structured reporting.</p>
+<p>Standardizing the way information is reported in scientific articles has benefits beyond improving the transparency of individual power analyses. When information is consistently structured across articles, automated tools can more reliably extract and organize reported information into databases containing standardized records of scientific practices. Such databases would support the FAIR principles <span class="citation" data-cites="wilkinson_2016">(<a href="#ref-wilkinson_2016" role="doc-biblioref">Wilkinson et al., 2016</a>)</span> by improving the findability of relevant information and facilitating the reuse of scientific information for large-scale assessments. For example, researchers could identify studies that meet specific methodological criteria, include participants from particular populations, or evaluate the same intervention. By making scientific information easier to extract, organize, and query, standardized reporting conventions can improve not only transparency but also the discoverability and reuse of research outputs.</p>
+</section>
+<section id="references" class="level2">
+<h2 data-anchor-id="references">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-appelbaum2018" class="csl-entry" role="listitem">
+Appelbaum, M., Cooper, H., Kline, R. B., Mayo-Wilson, E., Nezu, A. M., &amp; Rao, S. M. (2018). Journal article reporting standards for quantitative research in psychology: The APA publications and communications board task force report. <em>American Psychologist</em>, <em>73</em>(1), 3. <a href="https://doi.org/10.1037/amp0000191">https://doi.org/10.1037/amp0000191</a>
+</div>
+<div id="ref-bakker_2020" class="csl-entry" role="listitem">
+Bakker, M., Veldkamp, C. L. S., Van Den Akker, O. R., Van Assen, M. A. L. M., Crompvoets, E., Ong, H. H., &amp; Wicherts, J. M. (2020). Recommendations in pre-registrations and internal review board proposals promote formal power analyses but do not increase sample size. <em>PLOS ONE</em>, <em>15</em>(7), e0236079. <a href="https://doi.org/10.1371/journal.pone.0236079">https://doi.org/10.1371/journal.pone.0236079</a>
+</div>
+<div id="ref-lakens2022" class="csl-entry" role="listitem">
+Lakens, D. (2022). Sample size justification. <em>Collabra: Psychology</em>, <em>8</em>(1), 33267. <a href="https://doi.org/10.1525/collabra.33267">https://doi.org/10.1525/collabra.33267</a>
+</div>
+<div id="ref-lakens_2021" class="csl-entry" role="listitem">
+Lakens, D., &amp; DeBruine, L. M. (2021). Improving transparency, falsifiability, and rigor by making hypothesis tests machine-readable. <em>Advances in Methods and Practices in Psychological Science</em>, <em>4</em>(2), 2515245920970949. <a href="https://doi.org/10.1177/2515245920970949">https://doi.org/10.1177/2515245920970949</a>
+</div>
+<div id="ref-langenberg2023" class="csl-entry" role="listitem">
+Langenberg, B., Janczyk, M., Koob, V., Kliegl, R., &amp; Mayer, A. (2023). A tutorial on using the paired t test for power calculations in repeated measures ANOVA with interactions. <em>Behavior Research Methods</em>, <em>55</em>(5), 2467–2484.
+</div>
+<div id="ref-leon2011" class="csl-entry" role="listitem">
+Leon, A. C., Davis, L. L., &amp; Kraemer, H. C. (2011). The role and interpretation of pilot studies in clinical research. <em>Journal of Psychiatric Research</em>, <em>45</em>(5), 626–629.
+</div>
+<div id="ref-primbs_2022" class="csl-entry" role="listitem">
+Primbs, M. A., Pennington, C. R., Lakens, D., Silan, M. A. A., Lieck, D. S. N., Forscher, P. S., Buchanan, E. M., &amp; Westwood, S. J. (2022). Are small effects the indispensable foundation for a cumulative psychological science? A reply to götz et al. (2022). <em>Perspectives on Psychological Science</em>, 17456916221100420. <a href="https://doi.org/10.1177/17456916221100420">https://doi.org/10.1177/17456916221100420</a>
+</div>
+<div id="ref-sommet2023" class="csl-entry" role="listitem">
+Sommet, N., Weissman, D. L., Cheutin, N., &amp; Elliot, A. J. (2023). How many participants do i need to test an interaction? Conducting an appropriate power analysis and achieving sufficient power to detect an interaction. <em>Advances in Methods and Practices in Psychological Science</em>, <em>6</em>(3), 25152459231178728.
+</div>
+<div id="ref-thibault_2022" class="csl-entry" role="listitem">
+Thibault, R. T., &amp; Pedder, H. (2022). Excess significance and power miscalculations in neurofeedback research. <em>NeuroImage: Clinical</em>, <em>35</em>, 103008. <a href="https://doi.org/10.1016/j.nicl.2022.103008">https://doi.org/10.1016/j.nicl.2022.103008</a>
+</div>
+<div id="ref-thibault_errors_power" class="csl-entry" role="listitem">
+Thibault, R. T., Zavalis, E. A., Malički, M., &amp; Pedder, H. (2024). <em>An evaluation of reproducibility and errors in published sample size calculations performed using <span>G</span>*<span>Power</span></em> (p. 2024.07.15.24310458). medRxiv. <a href="https://doi.org/10.1101/2024.07.15.24310458">https://doi.org/10.1101/2024.07.15.24310458</a>
+</div>
+<div id="ref-wilkinson_2016" class="csl-entry" role="listitem">
+Wilkinson, M. D., Dumontier, M., Aalbersberg, Ij. J., Appleton, G., Axton, M., Baak, A., Blomberg, N., Boiten, J.-W., Silva Santos, L. B. da, Bourne, P. E., Bouwman, J., Brookes, A. J., Clark, T., Crosas, M., Dillo, I., Dumon, O., Edmunds, S., Evelo, C. T., Finkers, R., … Mons, B. (2016). The FAIR guiding principles for scientific data management and stewardship. <em>Scientific Data</em>, <em>3</em>(1), 1–9. <a href="https://doi.org/10.1038/sdata.2016.18">https://doi.org/10.1038/sdata.2016.18</a>
+</div>
+<div id="ref-yuan_2005" class="csl-entry" role="listitem">
+Yuan, K.-H., &amp; Maxwell, S. (2005). On the post hoc power in testing mean differences. <em>Journal of Educational and Behavioral Statistics Summer</em>, <em>30</em>, 141–167. <a href="https://doi.org/10.3102/10769986030002141">https://doi.org/10.3102/10769986030002141</a>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

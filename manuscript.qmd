@@ -1,0 +1,851 @@
+---
+title: "Improving the Transparency of Power Analyses Through Standardized Reporting"
+author:
+  - name: Cristian Mesquida
+    orcid: 0000-0002-1542-8355
+    email: c.mesquida.caldentey@tue.nl
+    affiliations:
+      - name: Eindhoven University of Technology
+        department: Industrial Engineering and Innovation Sciences
+        address: Den Dolech 2, 5600 MB, Eindhoven
+        city: Eindhoven
+    roles:
+     - conceptualization
+     - methodology
+     - formal analysis
+     - data curation
+     - writing — original draft
+  - name: Daniël Lakens
+    corresponding: true
+    orcid: 0000-0002-8393-5316
+    email: D.Lakens@tue.nl
+    affiliations:
+      - name: Eindhoven University of Technology
+        department: Industrial Engineering and Innovation Sciences
+        address: Den Dolech 2, 5600 MB, Eindhoven
+        city: Eindhoven
+    roles:
+     - conceptualization
+     - methodology
+     - formal analysis
+     - data curation
+     - writing — review and editing
+  - name: Lisa DeBruine
+    orcid: 0000-0002-7523-5539
+    email: lisa.debruine@glasgow.ac.uk
+    affiliations:
+      - name: University of Glasgow
+        department: Institute of Neuroscience and Psychology
+    roles:
+     - conceptualization
+     - methodology
+     - formal analysis
+     - data curation
+     - writing — review and editing
+keywords: [Peer Review, Quality Control, Automation, Standardisation, Power Analysis]
+author-note:
+  disclosures:
+    conflict-of-interest: "Authors declare no conflicts of interest"
+    data-sharing: "The data and analysis scripts related to this study are publicly available on the Open Science Framework and can be found at XXX"
+bibliography: [references.bib, package-citations.bib]
+floatsintext: true # Place figures and tables within the text
+format:
+  apaquarto-html:
+    embed-resources: false
+    toc-depth: 3
+    toc-expand: true
+    css: style.css
+  apaquarto-docx: default
+execute:
+  echo: false
+abstract: ""
+---
+
+```{r}
+#| label: setup
+#| eval: FALSE
+
+# install the apaquarto extension
+quarto::quarto_add_extension("wjschne/apaquarto", no_prompt = TRUE)
+
+# install the main version of Metacheck
+pak::pkg_install("scienceverse/metacheck@main")
+```
+
+```{r}
+#| label: libraries
+#| message: FALSE
+#| output: FALSE
+
+# Libraries to be loaded
+library(metacheck)
+library(dplyr)
+library(tidyr)
+library(flextable)
+
+# Create BIB file for R packages
+knitr::write_bib(
+  .packages(),
+  file = "package-citations.bib"
+)
+```
+
+```{r}
+#| label: data
+
+# Load RDS object containing articles from 2014 to 2026
+psych_science <- readRDS("data/psychsci.rds")
+```
+
+## Introduction
+
+An important step when designing a study is to justify the sample size that will be collected. The key aim of a sample size justification for such studies is to explain how the collected data is expected to provide valuable information given the inferential goals of the researcher [@lakens2022]. One common approach is to conduct an *a priori* power analysis. When such an analysis is performed, the report should include all parameters used to conduct it. Complete reporting enables editors, reviewers, and readers to evaluate the validity of the power analysis and reproduce its results. Yet, *a priori* power analyses often omit important information [@thibault_2022; @thibault_errors_power; @bakker_2020]. This lack of transparency prevents peers from reproducing the power analysis and limits their ability to scrutinize the analytic decisions. For example, incomplete reporting can obscure discrepancies between the statistical test specified in the *a priori* power analysis and the key statistical test used in the study [@bakker_2020], or between the effect size used in the power analysis and the effect of interest in a newly conducted study.
+
+### Potential solutions
+
+#### Metacheck
+
+One approach to improving the transparency of power analyses is to use automated tools such as Metacheck. Metacheck is a modular tool that uses text search, code, and large language models (LLMs) to extract information from scientific texts and provide suggestions for improvement. One of its dedicated modules, the `power` module, identifies power analyses and warn authors if a post hoc power analysis is reported.
+
+```{r}
+#| label: res_power
+#| eval: FALSE ## Set to TRUE to rerun module
+
+# Opt-out LLM
+llm_use(FALSE)
+
+# Run the module
+res_power <- module_run(psych_science, "power")
+
+# Save results
+save(res_power, file = "data/res_power.RData")
+```
+
+```{r}
+#| label: power_type
+
+# Load data
+load("data/res_power.RData")
+
+# Calculate number and proportion of power analyses by type
+power_type <- res_power$table |> 
+  count(power_type) |> 
+  mutate(
+    Percent = paste0(
+      round((n / sum(n)) * 100, 0),
+      "%"
+    )
+  ) |> 
+  select(
+    Power = power_type, 
+    Cases = n, 
+    Percent
+    )
+```
+
+The `power` module uses regular expressions (i.e., rule-based pattern matching) to identify sentences describing a power analysis and classify them as a priori, sensitivity or post hoc. To identify potential power analyses, the module searches for paragraphs that satisfy three criteria: they contain the standalone word *power* (or *powers*/*powered*), at least one term associated with power analyses (e.g., *effect size*, *sample size*, *a priori*, *sensitivity*, or *post hoc*), and at least one numeric value, excluding four-digit numbers that are likely to represent publication years. Because this approach relies on regular expressions, only power analyses that explicitly include keyowrds such as *a priori*, *sensitivity* or *post hoc* can be classified.
+
+To illustrate this limitation, we applied the `power` module to a sample of `r length(psych_science)` open-access articles from *Psychological Science* to estimate how many power analyses could be classified as *a priori*, *sensitivity* or *post hoc*. Across the `r length(res_power$table$power_id)` reported power analysis (although these include some double counted due to overlapping sentences), `r power_type[[4, 2]]` could not be classified, `r power_type[[1, 2]]` were classified as *a priori*, `r power_type[[3, 2]]` were classified as *sensitivity* and `r power_type[[2, 2]]` were classified as *post hoc*. These results suggest that many reported power analyses cannot be classified using the rule-based methods alone because authors often describe them without using standardized terminology. For example, researcher may write that a study was “powered at 80%”, “the desired power was .80” or “we planned to achieve an 80% probability of detecting the effect.” without explicitly stating that the analysis was *a priori*, *sensitivity* or *post hoc*.
+
+```{r}
+#| label: llm_power
+#| eval: FALSE ## Set to TRUE to rerun module
+
+# Opt-in LLM
+llm_use(TRUE)
+
+# Choose model
+llm_model("ollama/qwen3.5:9b")      
+
+# Increase the number of calls. Maximum number set to 30
+llm_max_calls(2500)
+
+# Run power module
+res_power_llm <- module_run(psych_science, "power")
+
+# Save the results
+save(res_power_llm, file = "data/res_power_llm.RData")
+```
+
+```{r}
+# Load data
+load("data/res_power_llm.RData")
+
+# Number of power analyses
+n_power_analyses <- nrow(res_power_llm$table)
+```
+
+<!--#  Below we show the prevalence of missing information using the LLM. This was already reported in the Metacheck paper. Instead of reporting the same information twice perhaps we can show an example of poorly reported power analysis?-->
+
+A second goal of the `power` module is to help researchers report power analyses more completely. However, extracting parameters of a power analysis from unstructured scientific text is challenging because the same information can be phrased in many different ways. Consequently, deterministic rule-based approaches fail to identify parameter information that is present but expressed in an unexpected way. To address this limitation the `power` module can optionally use an LLM to interpret flexible human language. To illustrate this approach, we applied the LLM-version of `power` module to a sample of `r length(psych_science)` open-access articles from *Psychological Science*. @tbl-power_llm shows the proportion of missing components from `r n_power_analyses` power analyses. Although the LLM-based approach can identify information expressed in a wider range of ways than rule-based methods, some parameters remain missing because they were not reported or could not be reliably extracted from the text.
+
+```{r}
+#| label: tbl-power_llm
+#| tbl-cap: !expr "sprintf('Proportion of missing components from %d power analyses.', n_power_analyses)"
+
+# Estimate the number and proportion of components from power analyses that are missing
+tbl_power_llm <- res_power_llm$table |> 
+  select(software_other:power_type) |> 
+  mutate(
+     # Combine software fields 
+    software_combined = coalesce(
+      software, 
+      software_other
+      ),
+    # Combine effect size metric fields
+    effect_size_metric_combined = coalesce(
+      effect_size_metric,
+      effect_size_metric_other
+    ),
+    # Combine statistical test fields
+    statistical_test_combined = coalesce(
+      statistical_test_other,
+      statistical_test 
+    )
+  ) |> 
+  select(
+    -c(
+    software, 
+    software_other, 
+    effect_size_metric, 
+    effect_size_metric_other,
+    statistical_test_other,
+    statistical_test
+    )
+  ) |>
+  mutate(
+    across(
+      -power_type,
+      ~ is.na(.x)
+    ),
+    power_type = power_type == "unknown"
+  ) |>
+  summarise(
+    across(everything(),
+           list(
+             n = sum,
+             pcnt = mean
+           )
+    )
+  ) |> pivot_longer(
+    cols = everything()
+  ) |>
+  separate(
+    name, 
+    c("Component", "name"), 
+    sep = "_(?!.*_)"
+    ) |>
+  pivot_wider() |>
+  mutate(pcnt = sprintf("%d%%", round(pcnt*100)))
+
+# Display the table
+tbl_power_llm |> 
+  flextable() |>
+  align(
+    align = "right", 
+    j = "pcnt", 
+    part = "all"
+    ) |>
+  set_header_labels(
+    n = "Missing",
+    pcnt = "Percent"
+    ) |>
+  width(
+    1:3, 
+    c(2, 1, 1)
+    )
+```
+
+Although LLMs provide a flexible way to parse natural language variation, they treat the symptoms of inconsistent reporting rather than its root cause. When information is inherently ambiguous or incomplete, an LLM may misclassify a power analysis or extract incorrect parameters. Moreover, using LLMs for routine information-extraction tasks incurs substantial computational and energy costs. A preferable long-term solution is to reduce the need for LLM-based approaches by making scientific text easier to extract in the first place. This goal is best achieved through standardized reporting conventions.
+
+#### Machine-readable power analyses
+
+Akin to the concept of machine-readable hypothesis [@lakens_2021], one possible solution would be to represent power analyses directly in a machine-readable format, such as JavaScript Object Notation (JSON). For example, the `power` module uses a JSON schema that defines the structure of a power analysis report and guides the LLM in extracting and organizing relevant information. A schema can specify which fields are required, which values are permitted, and how the information should be structured, making the resulting data easier for software to process. Such a representation could include predefined fields for the type of power analysis, statistical test, sample size, alpha level, target power, effect size, and other relevant parameters, such as the justification for the assumed effect size \[\@lakens2022\].
+
+However, requiring researchers to produce and submit power analyses directly as JSON files is currently unlikely to be practical. Although such a format would facilitate automated processing and validation, it would shift the burden of structuring information from automated systems to researchers and create an additional reporting requirement. A more feasible approach may be to maintain human-readable reporting formats while adopting standardized structures that allow power analysis information to be converted into machine-readable representations.
+
+#### Standardization
+
+One reason why power analyses lack key information is the absence of specific reporting guidelines that editors, reviewers, and researchers can follow. For example, the American Psychological Association's (APA) *Journal Article Reporting Standards* (JARS) provides reporting standards for several aspects of scientific articles [@appelbaum2018], but it provides no guidance on how to report power analyses. Furthermore, traditional reporting guidelines specify *what* information to report, but rarely dictate *how* it should be presented. A reporting standard that specifies both the required information and a consistent structure for presenting it could substantially improve the transparency and extractability of power analyses.
+
+A useful precedent exists in the standardized reporting of statistical tests following APA guidelines. Researchers are familiar with reporting statistical tests such as *t*-tests and *F*-tests using a consistent structure that includes the test statistic, degrees of freedom, *p*-value, and effect size. For example, an *F*-test may be reported as *F*(1, 3) = 3.23, *p* = .01, $\eta_p^2$ = .12. These standardized reporting convention allows readers to quickly identify and interpret the information they convey. At the same tume, they have the additional benefit of enabling automated extraction tools like Statcheck to reliably parse statistical tests and verify reported *p*-values.
+
+The same approach can be applied to power analyses. The first step is to determine what information should be reported and how it should be reported. To formalize these reporting requirements, we develop a JSON schema that defines the parameters to be reported, their data types, permitted values, and any relationships or conditional requirements between them. The schema serves as a machine-readable specification of the reporting standard that can be implemented in the Metacheck `power` module, rather than a format that researchers are expected to complete directly. Based on this formal specification, we propose a standardized, human-readable conventions that are sufficiently consistent for automated rule-based extraction while remaining practical for researchers to use in conventional scientific writing.
+
+## JSON schema
+
+Box 1 shows the structure of a machine-readable article, where each section can be represented as a machine-readable object containing predefined fields and values. Box 2 shows the JSON representation of a power analysiss that conform to the proposed schema. Each property (e.g., `id`, `type`) corresponds to a field defined in the schema and is illustrated using the example boxes, allowing readers to see how reported information is represented in practice. For illustrative purposes, we use an a priori power analysis for a 2 x 2 within-subject ANOVA, where the effect of interest is the interaction, as an example.
+
+Box 1. The top-level structure of a machine-readable article
+
+``` json
+{
+  "name": {},
+  "info": {},
+  "author": {},
+  "hypotheses": {},
+  "power_analysis": {"...Box 2..."},
+  "data": {},
+  "analyses": {},
+  "results": {}
+}
+```
+
+Box 2: JSON Schema overview for the power analysis object.
+
+``` json
+{
+"power_analysis": {
+  "id": {"...Box 3..."} ,
+  "type": {"...Box 4..."},
+  "family_test": {"...Box 5..."},
+  "type_test": {"...Box 6..."},
+  "test_parameters": {"...Box 7..."},
+  "type_effect_size": {"...Box 8..."},
+  "effect_size": {"...Box 9..."},
+  "effect_size_justification": {"...Box 10..."},
+  "sample_size": {"...Box 11..."},
+  "power": {"...Box 12..."},
+  "alpha": {"...Box 13..."},
+  "software": {"...Box 14..."}
+}
+```
+
+<!--#  The cases included for each component are not intended to be exhaustive. They were deliberately simplified to illustrate the proposed reporting framework. In practice, different types of power analyses may require different schemas, or alternatively, a single schema with conditional fields that depend on the type of power analysis. -->
+
+### Unique Identifier
+
+We propose that each power analysis should be assigned a unique identifier. This identifier would create an explicit link between the research question, the statistical test used to address it, and the corresponding power analysis. Lakens and DeBruine [-@lakens_2021] argued that hypotheses should be machine-readable because textual descriptions are often too vague to determine which statistical test related to the hypothesis and which pattern of results should be observed to corroborate the hypothesis.
+
+The same principle applies to power analyses, which are often reported with insufficient detail to determine which hypothesis or statistical test they were intended to support. This issue is particularly relevant in studies that include multiple hypotheses or multiple statistical tests, where researchers may conduct multiple power analyses but do not clearly indicate which analysis each power analysis corresponds to. Assigning a unique identifier to each power analysis would allow researchers and automated tools to establish these relationships and determine whether each planned analysis is supported by an appropriate power analysis. Such links could facilitate automated checks of whether all primary analyses have a corresponding power analysis and whether multiple power analyses refer to the same planned analysis.
+
+The `id` field should contain a unique identifier that allows the power analysis to be linked to the corresponding hypothesis and statistical test. The identifier itself has no statistical meaning; it functions as a reference that enables researchers, reviewers, and automated tools to determine which power analysis supports which hypothesis. For example, a manuscript may assign "01" to the power analysis corresponding to the first primary hypothesis test. If a study includes multiple hypotheses, each power analysis should receive a distinct identifier.
+
+Box 3.1: JSON Schema representation of the `id` property.
+
+``` {#id .json}
+{
+  "id": {
+    "type": "string",
+    "description": "Unique identifier used to link the power analysis to the corresponding hypothesis and statistical test."
+  }
+}
+```
+
+Box 3.2. Example JSON representation of the `id` property.
+
+``` json
+{
+  "id": "01",
+  ...
+}
+```
+
+### Type of power analysis
+
+This information is important because different types of power analyses answer different questions [@lakens2022]. We distinguish four types of power analyses. First, an *a priori* power analysis is conducted before data collection to estimate the sample size required to detect an effect of interest. Second, a sensitivity power analysis determines the range of effect sizes that can be detected with a specified level of statistical power given the available sample size, statistical test, and significance level. In the schema, we refer to this type of analysis as effect-size sensitivity analysis to distinguish it from other forms of sensitivity analyses and to emphasize that the primary quantity of interest is the smallest effect size that can be detected. Third, a post hoc power analysis calculates the statistical power associated with a prespecified expected effect size given the sample size actually obtained.
+
+However, the term post hoc power analysis is frequently used ambiguously. Researchers may use it either to refer to power calculated using a prespecified expected effect size or to power calculated using the observed effect size obtained from the study. These approaches serve different purposes. Power calculations based on the observed effect size provide no additional information beyond the *p*-value and are not recommended [@yuan_2005]. In contrast, power calculations based on a prespecified expected effect size can provide information about the sensitivity of the study design given the sample size obtained. To avoid this ambiguity, the schema uses the term power sensitivity for analyses based on a prespecified expected effect size and reserves the term post hoc for analyses based on the observed effect size. The `type` field specifies the type of power analysis conducted.
+
+Box 4.1: JSON Schema representation of the `type` property.
+
+``` json
+"type": {
+      "type": "string",
+      "description": "The type of power analysis conducted.",
+      "enum": [
+        "a priori", 
+        "effect size sensitivity", 
+        "power sensitivity",
+        "post hoc"
+      ]
+    }
+```
+
+Box 4.2: Example JSON representation of the `type` property.
+
+``` json
+{
+  ...
+  "type": "a priori",
+  ...
+}
+```
+
+<!--# I assume it is better to avoid spaces between words. -->
+
+### Family test
+
+The schema separates the broad `family_test` property from the more specific `type_test` value. The `family_test` property identifies the broad class of statistical test used in the power analysis: correlation, *t*-test, or *F*-test. This broad classification facilitates downstream extraction and validation by allowing the schema to apply test-specific requirements. For example, *t*-tests require information about the directionality of the test (one-sided or two-sided), whereas repeated-measures *F*-tests require information about the assumed within-subject correlation (within_subject_correlation).
+
+Box 5.1: JSON Schema representation of the `family_test` property.
+
+``` json
+"family_test": {
+      "type": "string",
+      "description": "Broad class of statistical test used in the power analysis.",
+      "enum": [
+        "correlation", 
+        "t-test", 
+        "F-test"
+        ]
+    }
+```
+
+Box 5.2: Example JSON representation of the `family_test` property.
+
+``` json
+{
+  ...
+  "family_test": "F-test",
+  ...
+}
+```
+
+### Type of test
+
+The schema separates the broad `family_test` property from the more specific `type_test` value. Whereas `family_test` identifies the general class of statistical test (e.g., correlation, *t*-test and *F*-test), `type_test` specifies the design or configuration of that test. Reporting this information is important because it clarifies which statistical procedure the power analysis refers to. For correlations (`r`), it indicates whether the correlation is within-subject or between-subject. For *t*-tests, the `type_test` property indicates whether the comparison is one-group, within-subject, or between-subject. For *F*-tests, it specifies the factorial structure using notation such as 2w, 2b, or 2b\*2w, where the number indicates the number of levels and the letters indicate within-subject (w) or between-subject (b) factors.
+
+Box 6.1: JSON Schema representation of the `type_test` property.
+
+``` json
+"type_test": {
+      "type": "string",
+      "description": "Specific test configuration. For r, report 'within-subject' or 'between-subject'. For t-tests, report 'one-group', 'within-subject', or 'between-subject'. For F-tests, use factorial notation such as 2w, 2b, or 2b*2, where the number indicates the number of levels and the letters indicate between-(b) or within-(w) subject factors."
+}
+```
+
+Box 6.3: Example JSON representation of the `type_test` property.
+
+``` json
+{
+  ...
+  "type_test": "2w*2w",
+  ...
+}
+```
+
+### Test parameters
+
+Some statistical tests require additional parameters to fully specify the power analysis. These parameters are stored in the test_parameters object. The required parameters depend on the selected family_test and the design configuration.
+
+For correlation tests and *t*-tests, the directionality of the hypothesis should be reported using the tail parameter. A one-sided test is used when the hypothesis specifies a directional prediction, whereas a two-sided test is used when deviations in either direction are considered meaningful. The tail parameter is therefore required for these analyses because the choice between one- and two-sided testing directly affects the critical value and, consequently, the required sample size.
+
+For within-subject *F*-tests, the correlation between repeated measurements should be reported using the within_subject_correlation parameter. This correlation represents the expected association between repeated observations and influences the variance estimate used in the power calculation. It is only relevant for designs that include within-subject factors and is therefore not required for purely between-subject designs.
+
+<!--# We could also include sphericity correction as in G*Power.Another feature could be to make the schema conditional. For exmaple, if family_test = t-test, only tail must be reported. If F-test, only within_subject_correlation must be reported. -->
+
+Box 7.1: JSON Schema fragment defining the `test_parameters` property.
+
+``` json
+"test_parameters": {
+      "type": "object",
+      "description": "Test-specific parameters.",
+      "properties": {
+        "tail": {
+          "type": "string",
+          "enum": [
+            "one-sided",
+            "two-sided"
+          ],
+          "description": "Directionality of the statistical test. Required for t-tests and correlation tests."
+          
+        },
+        "within_subject_correlation": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Expected correlation between repeated measurements. Required for F-tests that include within-subject factors."
+        }
+      }
+    }
+```
+
+Box 7.3: Example JSON representation of the `test_parameters` property.
+
+``` json
+{
+  ...
+  "test_parameters": {
+    "within_subject_correlation": 0.5
+  },
+  ...
+}
+```
+
+### Type of effect
+
+The effect of interest should be specified because a statistical test does not always unambiguously identify the specific effect for which a power analysis was conducted. For simple designs, such as a *t*-test, the effect of interest typically corresponds directly to the comparison being tested. However, in factorial designs, researchers may be interested in different effects, including main effects, interactions, planned contrasts, or simple effects. Specifying the type of effect clarifies which hypothesis the power analysis was designed to evaluate and allows readers to determine whether the power analysis corresponds to the intended research question.
+
+Box 8.1: JSON Schema representation of the `type_effect` property.
+
+``` json
+"type_effect": {
+      "type": "string",
+      "description": "The effect or estimand of interst.",
+      "enum": [
+        "main effect",
+        "interaction",
+        "planned contrast",
+        "simple effect",
+        "other"
+      ]
+    }
+```
+
+Box 8.2: Example JSON representation of the `type_effect` property.
+
+``` json
+{
+  ...
+  "type_effect": "interaction"
+  ...
+}
+```
+
+### Effect size
+
+The effect size metric and magnitude used in the power analysis should be reported. Different statistical tests require different effect size metrics, and reporting only the numerical value is insufficient because the same value can represent different quantities depending on the metric used. For example, a power analysis for a *t*-test may be based on Cohen's *d*, whereas a power analysis for a correlation may be based on Pearson's correlation (*r*). Reporting the metric allows readers to determine whether the assumed effect size corresponds to the effect of interest and enables the power analysis to be reproduced.
+
+However, reporting the metric may not always be sufficient to reproduce the effect size used in the power analysis. Researchers may convert an effect size from another metric, calculate an effect size from summary statistics, or combine multiple estimates to obtain the value used in the power analysis. The description property allows researchers to transparently report how the effect size was obtained. For example, if an effect size was converted from another metric, researchers should report the original metric and the conversion formula used. If the effect size was calculated by the researchers, the calculation procedure should be described. This information allows readers to evaluate the assumptions underlying the selected effect size and improves the reproducibility of the power analysis.
+
+The magnitude of the effect size should also be reported because it determines the sample size required to achieve a specified level of statistical power. Reporting the magnitude allows readers to evaluate whether the assumed effect size is plausible, justified, and appropriate for the research question.
+
+Box 9.1: JSON Schema representation of the `effect_size` property.
+
+<!--# We could also create another property to specify how the effect size was estimated where researchers can include means and standard deviations. Should we alos allow spceify the type of effect size beyond the family? For instance, Cohen's ds or drm. -->
+
+``` json
+ "effect_size": {
+      "type": "object",
+      "description": "The metric and magnitude of the effect size used in the power analysis.",
+      "additionalProperties": false,
+      "properties": {
+        "metric": {
+          "type": "string",
+          "enum": [
+            "d", 
+            "g", 
+            "f", 
+            "r", 
+            "β"
+            ]
+        },
+        "magnitude": {
+          "type": "number"
+        },
+        "description": {
+          "type": "string",
+          "description": "Additional information about how the effect size was obtained. If the effect size was converted from another metric, report the conversion formula used and its reference."
+    }
+      },
+      "required": [
+        "metric",
+        "magnitude"
+      ]
+    }
+```
+
+Box 9.2: Example JSON representation of the `type_effect` property.
+
+``` json
+{
+  ...
+  "effect_size": {
+    "metric": "f",
+    "magnitude": 0.12,
+  }
+  ...
+}
+```
+
+### Effect Size Justification
+
+Researchers may justify the effect size used in an *a priori* power analysis in several ways. We distinguish six common approaches: effect sizes from previous studies, meta-analyses, pilot studies, Cohen's *d* thresholds, field-specific thresholds, and the smallest effect size of interest (SESOI) [@lakens2022]
+
+When effect sizes are derived from previous studies or meta-analyses, caution is warranted because these estimates may not correspond to the effect researchers aim to detect. Effect sizes from underpowered studies are often highly uncertain and may overestimate the true effect due to selection bias. Moreover, previous studies may differ from the planned study in important ways, including the population, study design, manipulation or intervention, and outcome measures. These contextual differences determine whether a previously reported effect is relevant to the new study. Meta-analyses aggregate results across studies to estimate pooled effects, but these estimates may also be inappropriate when the included studies differ substantially in design, populations, or outcomes, or when substantial heterogeneity exists.
+
+In other occasions researchers might conduct a pilot study to estimate the effect size of an intervention. However, a pilot study does not provide a meaningful effect size estimate for planning subsequent studies due to the imprecision inherent in data from small samples [@leon2011].
+
+Researchers may also rely on Cohen's *d* thresholds or field-specific benchmarks, such as conventions for small, medium, or large effects. However, this practice can be problematic because it ignores the research context from which an effect-size estimate derives. Factors such as the population, study design, manipulation or intervention, and outcome measure determine whether an effect size is plausible and relevant for a particular study. Consequently, choosing an effect size solely on the basis of Cohen's *d* thresholds or other field-specific benchmarks may overlook the contextual factors that determine whether the effect size is appropriate for the planned study [@primbs_2022].
+
+Finally, researchers may justify the effect size based on a smallest effect size of interest (SESOI), which defines the smallest effect that would be considered theoretically or practically meaningful for the research question and it is considered best practice.
+
+The options in `method` represent common approaches for justifying an effect size but are not exhaustive. The `description` property allows researchers to provide additional details about how the effect size was obtained or adapted. For example, researchers may combine information from multiple studies by averaging reported effect sizes, apply bias-adjustment methods to an effect size reported in a previous study or meta-analysis, or use an effect size from a previous study with a simpler design to estimate an interaction effect [@langenberg2023; @sommet2023]. Providing this information is important because the same justification category may involve substantially different procedures for obtaining the final effect size estimate.
+
+Box 10.1: JSON Schema representation of the `effect_size_justification` property.
+
+``` json
+"effect_size_justification": {
+  "type": "object",
+  "description": "Justification for the effect size estimate used in the power analysis.",
+  "additionalProperties": false,
+  "properties": {
+    "method": {
+      "type": "string",
+      "enum": [
+        "previous study",
+        "meta-analysis",
+        "pilot study",
+        "Cohen threshold",
+        "field-specific threshold",
+        "SESOI",
+        "other"
+      ]
+    },
+    "reference": {
+      "type": "string",
+      "description": "Reference to the study, meta-analysis, or other source used to justify the effect size estimate."
+    },
+    "description": {
+      "type": "string",
+      "description": "Additional explanation about how the effect size was selected or calculated. For example, researchers may average effect sizes from multiple studies, use a bias-adjusted effect size or estimate an interaction effect from a independent two-group study design."
+    }
+  },
+  "required": [
+    "method"
+  ]
+}
+```
+
+Box 10.2: Example JSON representation of the `effect_size_justification` property.
+
+``` json
+{
+ ...
+  "effect_size_justification": {
+    "method": "previous study",
+    "reference": "https://doi.org/example/251524592097094",
+    "description": "EXAMPLE?"
+  }
+  ...
+}
+```
+
+### Sample size
+
+The sample size used in the power analysis should be reported explicitly. In the schema, this information is represented by the `sample_size` object with `total` and, where applicable, `per_group` values. Reporting the total sample size allows the power analysis to be reproduced, whereas reporting the per-group sample size is particularly informative for designs with multiple independent groups because it shows how the total sample is allocated across conditions. For designs where participants are not divided into groups (e.g., within-subject correlation, one-sample *t*-tests, within-subject or *t*-tests), only the total sample size may be relevant.
+
+Box 11.1: JSON Schema representation of the `sample_size` property.
+
+``` json
+    "sample_size": {
+      "type": "object",
+      "description": "Sample size information.",
+      "additionalProperties": false,
+      "properties": {
+        "per_group": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "total"
+      ]
+    }
+```
+
+Box 11.2: Example JSON representation of the `sample_size` property.
+
+``` json
+{
+  ...
+  "sample_size": {
+    "total": 186
+  },
+  ...
+}
+```
+
+### Power
+
+The power level should be reported because it determines the probability of detecting an effect of the specified magnitude, assuming that the effect exists. Although 80% is commonly used as a default, researchers should explicitly report their chosen level of power. To facilitate machine readability and automated extraction, power should be reported as a numeric value between 0 and 1 (e.g., 0.80 rather than 80%).
+
+Box 12.1: JSON Schema representation of the `power` property.
+
+``` json
+"power": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Planned or achieved statistical power."
+    }
+```
+
+Box 12.2: Example JSON representation of the `power` property.
+
+``` json
+{
+  ...
+  "power": 0.9,
+  ...
+}
+```
+
+### Alpha
+
+Although 0.05 is commonly used as a default, the alpha level should be reported because it determines the threshold for statistical significance and directly affects the required sample size. Reporting the alpha level also allows peers to evaluate whether it matches the alpha level used in the study. For example, a study may adjust the alpha level to account for multiple comparisons but use a different alpha level in the power analysis, resulting in an underpowered study. To facilitate machine readability and automated extraction, the alpha level should be reported as a numeric value between 0 and 1 (e.g., 0.05 rather than 5%). The `justification` property allows researchers to provide a justification explaining the rationale for this choice, such as adjustments for multiple comparisons.
+
+Box 13.1: JSON Schema representation of the `alpha` property.
+
+``` json
+ "alpha": {
+  "type": "object",
+  "description": "Type I error rate selected for the statistical test.",
+  "additionalProperties": false,
+  "properties": {
+    "value": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Type I error rate selected for the analysis."
+    },
+    "justification": {
+      "type": "string",
+      "description": "Explanation of the rationale for selecting the alpha level. For example, researchers may adjust the alpha level to account for multiple comparisons."
+    }
+  },
+  "required": [
+    "value"
+  ]
+}
+```
+
+Box 13.2: Example JSON representation of the `alpha` property.
+
+``` json
+{
+  ...
+  "alpha": {
+    "level": 0.05
+    "justification": ""
+  }
+  ...
+}
+```
+
+### Software
+
+The software used to conduct the power analysis should be reported to allow peers to reproduce the analysis using the exact same sofware and package if applicable (e.g., when using R). They should also provide a link to the script, notebook, or other file containing the code used to perform the power analysis.
+
+<!--# An additional property could be "version" or "code" where researchers have to include the code used (e.g., pwr.t.test(...)) -->
+
+Box 14.1: JSON Schema representation of the `software` property.
+
+``` json
+"software": {
+  "type": "object",
+  "description": "Software used for the power analysis.",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "enum": [
+        "R",
+        "G*Power",
+        "JASP",
+        "jamovi"
+      ]
+    },
+    "package": {
+      "type": "string",
+      "description": "Name of the package used to perform the power analysis."
+    },,
+    "file_location": {
+      "type": "string",
+      "format": "uri",
+      "Description": "Link to the repository, file, or other online location containing the code used for the power analysis."
+}
+    },
+  },
+  "required": [
+    "name"
+  ]
+}
+```
+
+Box 14.2: Example JSON representation of the `software` property.
+
+``` json
+{
+  ...
+  "software": {
+    "name": "G*Power",
+    "file_location":""
+  }
+}
+```
+
+## Full Example
+
+Box 15 shows a complete example containing all properties defined in the proposed schema.
+
+Box 15. Example JSON representation of a complete power analysis object.
+
+``` json
+{
+  "id": "01",
+  "type": "a priori",
+  "family_test": "F-test",
+  "type_test": "2w*2w",
+  "test_parameters": [
+    "within_subject_correlation: 0.5"
+  ],
+  "type_effect": "interaction",
+  "effect_size": {
+    "metric": "f",
+    "magnitude": 0.12
+  },
+  "effect_size_justification": {
+    "method": "previous study",
+    "reference": "https://doi.org/example/251524592097094"
+  },
+  "sample_size": {
+    "total": 186
+  },
+  "power": 0.9,
+  "alpha": {
+    "level": 0.05
+    },
+  "software": {
+    "name": "G*Power",
+    "file_location":"https://EXAMPLE"
+  }
+}
+```
+
+## Standardized reporting
+
+Now that we have defined a JSON Schema that specifies which information should be reported and how it should be structured, the next step is to establish standardized reporting guidelines for power analysis. These guidelines should ensure that information is interpretable by human readers but also structured in a way that automated tools like Metacheck can extract using deterministic approaches (e.g., regular expressions). The extracted information can then be used to populate a JSON object, which can be validated against the JSON Schema to ensure that all required fields are present and that reported values conform to the specified constraints.
+
+<!--# The way I conceive this is that the Metacheck power module will use rule-based code to extract this information, represent it as a structured object, and validate it against the JSON schema. -->
+
+Proposed standardized reporting for power analyses:
+
+> power_analysis: id = 01; type = a priori; family_test = F-test; type_test = 2w2w; test_parameters.within_subject_correlation = 0.50; type_effect = interaction; effect_size.metric = f; effect_size.magnitude = 0.12; effect_size_justification.method = previous study; effect_size_justification.reference = https://doi.org/example/251524592097094; sample_size.total = 186; alpha.level = 0.05; power = 0.90; software.name = G\*Power, software.file_location = https://EXAMPLE".
+
+## Discussion
+
+The proposed schema represents an initial step toward a standardized representation of power analyses that can improve transparency by imposing a consistent structure on the information required to evaluate and reproduce power analyses, while also facilitating information extraction using rule-based automated tools.
+
+The current version focuses on commonly used statistical tests, including correlations, *t*-tests, and *F*-tests. Extending the standard to accommodate more complex analytical approaches, such as power analyses for mixed-effects models or simulation-based power analyses, will require identifying additional parameters and reporting requirements. Developing a comprehensive standard that covers the diversity of power analysis approaches used across disciplines will therefore require a community effort involving researchers and other stakeholders, such as journals. Such collaborative development can ensure that future extensions of the schema reflect the needs of different research communities while maintaining a consistent structure that supports both human interpretation and automated extraction.
+
+Although structured formats such as JSON provide clear advantages for automated processing and validation, requiring researchers to manually complete structured objects for each power analysis would introduce additional reporting demands and may reduce adoption. The proposed approach therefore aims to achieve a compromise between machine readability and practical feasibility by maintaining conventional human-readable reporting while introducing sufficient structure for automated extraction and validation. Nevertheless, future developments could explore workflows in which software generates machine-readable representations directly, reducing the need for manual data entry while preserving the advantages of structured reporting.
+
+Standardizing the way information is reported in scientific articles has benefits beyond improving the transparency of individual power analyses. When information is consistently structured across articles, automated tools can more reliably extract and organize reported information into databases containing standardized records of scientific practices. Such databases would support the FAIR principles [@wilkinson_2016] by improving the findability of relevant information and facilitating the reuse of scientific information for large-scale assessments. For example, researchers could identify studies that meet specific methodological criteria, include participants from particular populations, or evaluate the same intervention. By making scientific information easier to extract, organize, and query, standardized reporting conventions can improve not only transparency but also the discoverability and reuse of research outputs.
+
+```{r}
+#| label: session-info
+#| include: false
+
+capture.output(
+  sessioninfo::session_info(),
+  file = "session-info.txt"
+)
+```
+
+## References
