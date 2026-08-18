@@ -232,8 +232,12 @@ Box 4.2: Example JSON representation of the `type` property.
 
 ### Test Family and Test Type
 
-Researchers should provide both general information about the family the test that power is computed for belongs to (e.g., a correlation, *t*-test, or *F*-test) as more specific information about the type, design, or configuration of that test. In essence, this aspect of the power analysis contains all information that would be specified in a power analysis about the statistical test that is performed. For example, for a *t*-test, power analysis software such as G\*Power would require users to specify the type of *t*-test (one-sample, two-sample, or paired-sample) and the direction (one-sided or two-sided). The more complex a test is, the more details of a test need to be specified, up to a point where it might be easier to share the code for the power analysis than to describe all details of the test verbally. 
- 
+Researchers should provide both general information about the family the test that power is computed for belongs to (e.g., a correlation, *t*-test, or *F*-test) as more specific information about the type, design, or configuration of that test. In essence, this aspect of the power analysis contains all information that would be specified in a power analysis about the statistical test that is performed. For example, for a *t*-test, power analysis software such as G\*Power would require users to specify the type of *t*-test (one-sample, two-sample, or paired-sample). 
+
+For *F*-tests, researchers should specify the factorial structure (for example using notation such as 2w, 2b, or 2b\*2w, where the number indicates the number of levels and the letters indicate within-subject (w) or between-subject (b) factors) and the which main effect or interaction the power analysis is for. The effect of interest should be specified because a statistical test does not always unambiguously identify the specific effect for which a power analysis was conducted. For simple designs, such as a *t*-test, the effect of interest typically corresponds directly to the comparison being tested. However, in factorial designs, researchers may be interested in different effects, including main effects, interactions, planned contrasts, or simple effects. Specifying the type of effect clarifies which hypothesis the power analysis was designed to evaluate and allows readers to determine whether the power analysis corresponds to the intended research question.
+
+Some statistical tests require additional parameters to fully specify the power analysis. These test parameters depend on the test family and the design configuration. Test assumptions (e.g., the homogeneity of variances assumption that differentiates Student's *t*-test from Welch's *t*-test, or a Greenhouse Geisser correction for an *f*-test) are one example of test parameters. For correlations and *t*-tests the directionality of the hypothesis should be reported using the tail parameter. For within-subject *F*-tests the correlation between repeated measurements should be reported. This correlation represents the expected association between repeated observations and influences the variance estimate used in the power calculation. In complex designs, this would require specifying a correlation matrix. The more complex a test is, the more details of a test need to be specified, up to a point where it might be easier to share the code for the power analysis than to describe all details of the test verbally.
+
 Box 5.1: JSON Schema representation of the `family_test` property.
 
 ``` json
@@ -258,10 +262,6 @@ Box 5.2: Example JSON representation of the `family_test` property.
 }
 ```
 
-### Type of test
-
-The schema separates the broad `family_test` property from the more specific `type_test` value. Whereas `family_test` identifies the general class of statistical test (e.g., correlation, *t*-test and *F*-test), `type_test` specifies the design or configuration of that test. Reporting this information is important because it clarifies which statistical procedure the power analysis refers to. For correlations (`r`), it indicates whether the correlation is within-subject or between-subject. For *t*-tests, the `type_test` property indicates whether the comparison is one-group, within-subject, or between-subject. For *F*-tests, it specifies the factorial structure using notation such as 2w, 2b, or 2b\*2w, where the number indicates the number of levels and the letters indicate within-subject (w) or between-subject (b) factors.
-
 Box 6.1: JSON Schema representation of the `type_test` property.
 
 ``` json
@@ -280,16 +280,6 @@ Box 6.3: Example JSON representation of the `type_test` property.
   ...
 }
 ```
-
-### Test parameters
-
-Some statistical tests require additional parameters to fully specify the power analysis. These parameters are stored in the test_parameters object. The required parameters depend on the selected family_test and the design configuration.
-
-For correlation tests and *t*-tests, the directionality of the hypothesis should be reported using the tail parameter. A one-sided test is used when the hypothesis specifies a directional prediction, whereas a two-sided test is used when deviations in either direction are considered meaningful. The tail parameter is therefore required for these analyses because the choice between one- and two-sided testing directly affects the critical value and, consequently, the required sample size.
-
-For within-subject *F*-tests, the correlation between repeated measurements should be reported using the within_subject_correlation parameter. This correlation represents the expected association between repeated observations and influences the variance estimate used in the power calculation. It is only relevant for designs that include within-subject factors and is therefore not required for purely between-subject designs.
-
-<!--# We could also include sphericity correction as in G*Power.Another feature could be to make the schema conditional. For exmaple, if family_test = t-test, only tail must be reported. If F-test, only within_subject_correlation must be reported. -->
 
 Box 7.1: JSON Schema fragment defining the `test_parameters` property.
 
@@ -329,9 +319,7 @@ Box 7.3: Example JSON representation of the `test_parameters` property.
 }
 ```
 
-### Type of effect
-
-The effect of interest should be specified because a statistical test does not always unambiguously identify the specific effect for which a power analysis was conducted. For simple designs, such as a *t*-test, the effect of interest typically corresponds directly to the comparison being tested. However, in factorial designs, researchers may be interested in different effects, including main effects, interactions, planned contrasts, or simple effects. Specifying the type of effect clarifies which hypothesis the power analysis was designed to evaluate and allows readers to determine whether the power analysis corresponds to the intended research question.
+### 
 
 Box 8.1: JSON Schema representation of the `type_effect` property.
 
@@ -361,11 +349,10 @@ Box 8.2: Example JSON representation of the `type_effect` property.
 
 ### Effect size
 
-The effect size metric and magnitude used in the power analysis should be reported. Different statistical tests require different effect size metrics, and reporting only the numerical value is insufficient because the same value can represent different quantities depending on the metric used. For example, a power analysis for a *t*-test may be based on Cohen's *d*, whereas a power analysis for a correlation may be based on Pearson's correlation (*r*). Reporting the metric allows readers to determine whether the assumed effect size corresponds to the effect of interest and enables the power analysis to be reproduced.
+The effect size metric (e.g., correlation, Cohen's f, odds ratio) and magnitude (e.g., 0.5, 1.3) used in the power analysis should be reported (**Cris, add a part 'but are often missing REF REF REF**). Reporting only the numerical value (e.g., and effect size of 0.1) is insufficient because the same value can represent different quantities depending on the metric used (e.g., the effect size could be a Cohen's d, or a raw mean difference, or Cohen's f, or partial eta squared). Reporting the metric allows readers to determine whether the assumed effect size corresponds to the effect of interest, and increases the reproducibility of the power analysis. Reporting the magnitude allows readers to evaluate whether the assumed effect size is plausible, justified, and appropriate for the research question.
 
-However, reporting the metric may not always be sufficient to reproduce the effect size used in the power analysis. Researchers may convert an effect size from another metric, calculate an effect size from summary statistics, or combine multiple estimates to obtain the value used in the power analysis. The description property allows researchers to transparently report how the effect size was obtained. For example, if an effect size was converted from another metric, researchers should report the original metric and the conversion formula used. If the effect size was calculated by the researchers, the calculation procedure should be described. This information allows readers to evaluate the assumptions underlying the selected effect size and improves the reproducibility of the power analysis.
+Reporting the metric may not always be sufficient trace back what it was based on. Researchers may convert the effect size they use in a power analysis from an effect size reported in another metric, calculate an effect size from summary statistics, or combine multiple effect sizes in the literature to obtain the value used in the power analysis. For example, researchers may combine information from multiple studies by averaging reported effect sizes, apply bias-adjustment methods to an effect size reported in a previous study or meta-analysis. Although this recommendation goes beyond simply reporting the power analysis, it is essential information to be able to evaluate the validity of a power analysis. Researchers should transparently report how the effect size used in the power analysis was obtained or calculated. For example, if an effect size was converted from another metric, researchers should report the original metric and the conversion formula used. If the effect size was calculated by the researchers, the calculation procedure should be described. This information allows readers to evaluate the assumptions underlying the selected effect size and improves the reproducibility of the power analysis.
 
-The magnitude of the effect size should also be reported because it determines the sample size required to achieve a specified level of statistical power. Reporting the magnitude allows readers to evaluate whether the assumed effect size is plausible, justified, and appropriate for the research question.
 
 Box 9.1: JSON Schema representation of the `effect_size` property.
 
@@ -417,17 +404,15 @@ Box 9.2: Example JSON representation of the `type_effect` property.
 
 ### Effect Size Justification
 
-Researchers may justify the effect size used in an *a priori* power analysis in several ways. We distinguish six common approaches: effect sizes from previous studies, meta-analyses, pilot studies, Cohen's *d* thresholds, field-specific thresholds, and the smallest effect size of interest (SESOI) [@lakens2022]
+There are six common approaches that researchers use to justify the effect size of interest in a power analysis: effect sizes from previous studies, meta-analyses, pilot studies, Cohen's *d* thresholds, field-specific thresholds, and the smallest effect size of interest (SESOI) [@lakens2022]. Reporting this information again goes beyond the statistical properties of a power analysis, but is essential when evaluate whether the sample size justification is valid. We therefore think that in addition to reporting how the effect size was determined, researchers should provide a justification for why this effect size was used in the power analysis. 
 
-When effect sizes are derived from previous studies or meta-analyses, caution is warranted because these estimates may not correspond to the effect researchers aim to detect. Effect sizes from underpowered studies are often highly uncertain and may overestimate the true effect due to selection bias. Moreover, previous studies may differ from the planned study in important ways, including the population, study design, manipulation or intervention, and outcome measures. These contextual differences determine whether a previously reported effect is relevant to the new study. Meta-analyses aggregate results across studies to estimate pooled effects, but these estimates may also be inappropriate when the included studies differ substantially in design, populations, or outcomes, or when substantial heterogeneity exists.
+This information is especially important to be able to detect common problems with the choice of an effect size of interest in a priori power analyses. When effect sizes are derived from previous studies or meta-analyses, researchers should explain that the effect is sufficiently similar to the planned study, as studies might differ in the population, study design, manipulation, intervention, or even outcome measures. Furthermore, researchers should reflect on the (possibly large) uncertainty in the effect size estimate of the original study. This is also true if the effect size comes from a pilot study that the researchers performed themselves. 
 
-In other occasions researchers might conduct a pilot study to estimate the effect size of an intervention. However, a pilot study does not provide a meaningful effect size estimate for planning subsequent studies due to the imprecision inherent in data from small samples [@leon2011].
+Instead of using an empirically observed effect size for the power analysis, researchers may rely on Cohen's *d* thresholds for small, medium, and large effects, or field-specific benchmarks. This practice can be problematic because it uses general benchmarks to design a specific study that is likely not similar to the general study in a field. Consequently, choosing an effect size solely on the basis of Cohen's *d* thresholds or other field-specific benchmarks may overlook the contextual factors that determine whether the effect size is appropriate for the planned study [@primbs_2022]. 
 
-Researchers may also rely on Cohen's *d* thresholds or field-specific benchmarks, such as conventions for small, medium, or large effects. However, this practice can be problematic because it ignores the research context from which an effect-size estimate derives. Factors such as the population, study design, manipulation or intervention, and outcome measure determine whether an effect size is plausible and relevant for a particular study. Consequently, choosing an effect size solely on the basis of Cohen's *d* thresholds or other field-specific benchmarks may overlook the contextual factors that determine whether the effect size is appropriate for the planned study [@primbs_2022].
+A better approach is to justify the effect size based on a smallest effect size of interest (SESOI), which specifies the effect a researcher does not want to miss, either because it is considered theoretically or practically meaningful for the research question. Regardless of the justification for the effect size is used to compute power, it should not simply be stated, but researchers should justify why it is a relevant effect size to design the study around. 
 
-Finally, researchers may justify the effect size based on a smallest effect size of interest (SESOI), which defines the smallest effect that would be considered theoretically or practically meaningful for the research question and it is considered best practice.
-
-The options in `method` represent common approaches for justifying an effect size but are not exhaustive. The `description` property allows researchers to provide additional details about how the effect size was obtained or adapted. For example, researchers may combine information from multiple studies by averaging reported effect sizes, apply bias-adjustment methods to an effect size reported in a previous study or meta-analysis, or use an effect size from a previous study with a simpler design to estimate an interaction effect [@langenberg2023; @sommet2023]. Providing this information is important because the same justification category may involve substantially different procedures for obtaining the final effect size estimate.
+[**Cris, I moved part of the bias correction up - it is part of computing the effect size - but you also had: ", or use an effect size from a previous study with a simpler design to estimate an interaction effect [@langenberg2023; @sommet2023]" - but this is bad practice, right? WHy would we discussi it? **]
 
 Box 10.1: JSON Schema representation of the `effect_size_justification` property.
 
@@ -480,7 +465,7 @@ Box 10.2: Example JSON representation of the `effect_size_justification` propert
 
 ### Sample size
 
-The sample size used in the power analysis should be reported explicitly. In the schema, this information is represented by the `sample_size` object with `total` and, where applicable, `per_group` values. Reporting the total sample size allows the power analysis to be reproduced, whereas reporting the per-group sample size is particularly informative for designs with multiple independent groups because it shows how the total sample is allocated across conditions. For designs where participants are not divided into groups (e.g., within-subject correlation, one-sample *t*-tests, within-subject or *t*-tests), only the total sample size may be relevant.
+The sample size used in the power analysis should be reported explicitly. Researchers should both report the total sample size, and where applicable, the sample size per group. Reporting the total and per group sample size allows the power analysis to be reproduced. The sample size can be people, or multiple observations from a single individual, or any combination thereof, and for studies with multiple observation per individual, information about the number of observations should be provided as well.
 
 Box 11.1: JSON Schema representation of the `sample_size` property.
 
@@ -519,7 +504,9 @@ Box 11.2: Example JSON representation of the `sample_size` property.
 
 ### Power
 
-The power level should be reported because it determines the probability of detecting an effect of the specified magnitude, assuming that the effect exists. Although 80% is commonly used as a default, researchers should explicitly report their chosen level of power. To facilitate machine readability and automated extraction, power should be reported as a numeric value between 0 and 1 (e.g., 0.80 rather than 80%).
+The power level should be reported because it determines the probability of detecting an effect of the specified magnitude, assuming that the effect exists. Although a power of 0.8 is commonly used as a default, researchers should explicitly report their chosen level of power, and there are good reasons to increase the statistical power 0.9 or 0.95 where possible. To facilitate machine readability and automated extraction, power should be reported as a numeric value between 0 and 1 (e.g., 0.80 rather than 80%).
+
+[**Cris, should people report the Type 2 error or the power? **]
 
 Box 12.1: JSON Schema representation of the `power` property.
 
@@ -544,7 +531,7 @@ Box 12.2: Example JSON representation of the `power` property.
 
 ### Alpha
 
-Although 0.05 is commonly used as a default, the alpha level should be reported because it determines the threshold for statistical significance and directly affects the required sample size. Reporting the alpha level also allows peers to evaluate whether it matches the alpha level used in the study. For example, a study may adjust the alpha level to account for multiple comparisons but use a different alpha level in the power analysis, resulting in an underpowered study. To facilitate machine readability and automated extraction, the alpha level should be reported as a numeric value between 0 and 1 (e.g., 0.05 rather than 5%). The `justification` property allows researchers to provide a justification explaining the rationale for this choice, such as adjustments for multiple comparisons.
+Although 0.05 is commonly used as a default alpha level in hypothesis tests, the alpha level should be reported because it determines the threshold for statistical significance and directly affects the power of a test. Reporting the alpha level also allows peers to evaluate whether it matches the alpha level used in the study. For example, a study may adjust the alpha level to account for multiple comparisons in the results section, but use a different alpha level in the power analysis. As corrections for multiple comparisons lower the alpha level, the also lower the statistical power of the test. To facilitate machine readability and automated extraction, the alpha level should be reported as a numeric value between 0 and 1 (e.g., 0.05 rather than 5%). The justification property allows researchers to provide a justification explaining the rationale for this choice [@lakens_justify_2018], such as adjustments for multiple comparisons. [**Nice - should we say the same for power? Also justify it?**]
 
 Box 13.1: JSON Schema representation of the `alpha` property.
 
@@ -586,7 +573,7 @@ Box 13.2: Example JSON representation of the `alpha` property.
 
 ### Software
 
-The software used to conduct the power analysis should be reported to allow peers to reproduce the analysis using the exact same sofware and package if applicable (e.g., when using R). They should also provide a link to the script, notebook, or other file containing the code used to perform the power analysis.
+The software used to conduct the power analysis should be reported to allow peers to reproduce the analysis using the exact same software, and where relevant, the packages package used (e.g., the specific R package). Different software packages can return slightly different calculations for the same settings. Researchers should also provide a link to the script, notebook, or other file that contains the code used to perform the power analysis. The link is preferably a Digital Object Identifier (DOI) that links to a file in a stable data repository. If the software used is point-and-click, researchers can link to a screenshot (for example on Figshare). 
 
 <!--# An additional property could be "version" or "code" where researchers have to include the code used (e.g., pwr.t.test(...)) -->
 
@@ -636,7 +623,7 @@ Box 14.2: Example JSON representation of the `software` property.
 }
 ```
 
-## Full Example
+## The JSON Structure
 
 Box 15 shows a complete example containing all properties defined in the proposed schema.
 
