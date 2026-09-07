@@ -23,10 +23,10 @@ power_manuscript/
 ├── _extensions/                      # Quarto extensions used by the manuscript
 ├── apa.csl                           # APA citation style file
 │
-├── output/                           # Rendered manuscripts
-│   └── manuscript/                 
-│       ├── manuscript.html           
-│       └── manuscript.docx           
+├── output/                           
+│   └── manuscript.html               # Rendered manuscript   
+│               
+│             
 │ 
 └── session-info.txt                  # R session information
 ```
